@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doomsday: Last Survivors - Event Tracker</title>
+    <title>Doomsday: Last Survivors - Alliance Calendar</title>
 
     <!-- Estilos do FullCalendar (Versão 6) -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
@@ -34,15 +34,16 @@
             border-color: #333;
         }
 
-        /* Barras dos eventos mais grossas e laranjas */
+        /* --- ESTILO DOS EVENTOS (SUAVES E TRANSPARENTES) --- */
         .fc-event { 
-            padding: 6px 4px !important; 
-            font-size: 0.9em; 
-            border: none; 
+            padding: 5px 4px !important; 
+            font-size: 0.85em; 
             border-radius: 4px; 
-            background-color: #ff9800; 
-            color: #111; 
             font-weight: bold;
+            /* Sombra no texto para garantir leitura em qualquer cor */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.9); 
+            /* Borda sutil para separar os eventos quando estão no mesmo dia */
+            border-width: 1px !important;
         }
         
         /* Linha divisória entre as semanas */
@@ -65,33 +66,42 @@
 </head>
 <body>
 
-    <h1>Doomsday: Last Survivors - Event Tracker</h1>
+    <h1>Doomsday: Last Survivors - Alliance Calendar</h1>
     <div id="calendar"></div>
 
-    <!-- Apenas o FullCalendar principal (sem bibliotecas de leitura de .ics) -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             
-            // AQUI ESTÃO OS SEUS EVENTOS, JÁ EXTRAÍDOS DO ARQUIVO .ics
-            // O formato é: { title: 'Nome', start: 'AAAA-MM-DD', end: 'AAAA-MM-DD', rrule: 'regra de repetição' }
+            // --- EVENTOS COM CORES INDIVIDUAIS E TRANSPARÊNCIA (ALPHA) ---
+            // O último número (0.7) é a opacidade. 0 = invisível, 1 = sólido.
             var eventosFixos = [
-                // --- Eventos Semanais e Quinzenais ---
-                { title: 'Water War', start: '2026-09-28', end: '2026-10-01', rrule: 'FREQ=WEEKLY;BYDAY=MO' },
-                { title: 'Anpede Hunt', start: '2026-09-28', end: '2026-09-29', rrule: 'FREQ=WEEKLY;BYDAY=MO' },
-                { title: 'Off-Limits War', start: '2026-09-29', end: '2026-09-30', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU' },
-                { title: 'Horde Defense', start: '2026-09-30', end: '2026-10-01', rrule: 'FREQ=WEEKLY;BYDAY=WE' },
-                { title: 'The Recovery Of Pompeii', start: '2026-10-06', end: '2026-10-07', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU' },
-                { title: 'All-Star Night', start: '2026-10-05', end: '2026-10-12', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=MO' },
-
-                // --- Eventos Mensais ---
-                { title: 'Alliance League', start: '2026-09-29', end: '2026-10-05', rrule: 'FREQ=MONTHLY;BYDAY=-1TU' },
-                { title: 'District Showdown', start: '2026-10-09', end: '2026-10-12', rrule: 'FREQ=MONTHLY;BYDAY=2FR' },
-                { title: 'Archipelago Raid (AR)', start: '2026-10-14', end: '2026-10-19', rrule: 'FREQ=MONTHLY;BYDAY=2WE' },
-                { title: 'Extreme Showdown', start: '2026-10-23', end: '2026-10-26', rrule: 'FREQ=MONTHLY;BYDAY=4FR' },
-                { title: 'All-Star Night (Top Commander)', start: '2026-09-21', end: '2026-09-27', rrule: 'FREQ=WEEKLY;UNTIL=20261004;INTERVAL=2;BYDAY=MO' }
+                // Azul Suave (Water War)
+                { title: 'Water War', start: '2026-09-28', end: '2026-10-01', rrule: 'FREQ=WEEKLY;BYDAY=MO', backgroundColor: 'rgba(52, 152, 219, 0.7)', borderColor: 'rgba(52, 152, 219, 1)' },
+                // Laranja/Vermelho Suave (Anpede Hunt)
+                { title: 'Anpede Hunt', start: '2026-09-28', end: '2026-09-29', rrule: 'FREQ=WEEKLY;BYDAY=MO', backgroundColor: 'rgba(231, 76, 60, 0.7)', borderColor: 'rgba(231, 76, 60, 1)' },
+                // Verde Limão Suave (Off-Limits War)
+                { title: 'Off-Limits War', start: '2026-09-29', end: '2026-09-30', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU', backgroundColor: 'rgba(46, 204, 113, 0.7)', borderColor: 'rgba(46, 204, 113, 1)' },
+                // Laranja Queimado (Horde Defense)
+                { title: 'Horde Defense', start: '2026-09-30', end: '2026-10-01', rrule: 'FREQ=WEEKLY;BYDAY=WE', backgroundColor: 'rgba(230, 126, 34, 0.7)', borderColor: 'rgba(230, 126, 34, 1)' },
+                // Roxo Suave (Pompeii)
+                { title: 'The Recovery Of Pompeii', start: '2026-10-06', end: '2026-10-07', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU', backgroundColor: 'rgba(155, 89, 182, 0.7)', borderColor: 'rgba(155, 89, 182, 1)' },
+                // Rosa/Vermelho (All-Star Night)
+                { title: 'All-Star Night', start: '2026-10-05', end: '2026-10-12', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=MO', backgroundColor: 'rgba(233, 30, 99, 0.7)', borderColor: 'rgba(233, 30, 99, 1)' },
+                
+                // Amarelo/Dourado (Alliance League)
+                { title: 'Alliance League', start: '2026-09-29', end: '2026-10-05', rrule: 'FREQ=MONTHLY;BYDAY=-1TU', backgroundColor: 'rgba(241, 196, 15, 0.7)', borderColor: 'rgba(241, 196, 15, 1)' },
+                // Verde Água (District Showdown)
+                { title: 'District Showdown', start: '2026-10-09', end: '2026-10-12', rrule: 'FREQ=MONTHLY;BYDAY=2FR', backgroundColor: 'rgba(26, 188, 156, 0.7)', borderColor: 'rgba(26, 188, 156, 1)' },
+                // Azul Escuro/Roxo (Archipelago Raid)
+                { title: 'Archipelago Raid (AR)', start: '2026-10-14', end: '2026-10-19', rrule: 'FREQ=MONTHLY;BYDAY=2WE', backgroundColor: 'rgba(142, 68, 173, 0.7)', borderColor: 'rgba(142, 68, 173, 1)' },
+                // Marrom/Cinza (Extreme Showdown)
+                { title: 'Extreme Showdown', start: '2026-10-23', end: '2026-10-26', rrule: 'FREQ=MONTHLY;BYDAY=4FR', backgroundColor: 'rgba(149, 165, 166, 0.7)', borderColor: 'rgba(149, 165, 166, 1)' },
+                
+                // Repetição do All-Star Night (Top Commander)
+                { title: 'All-Star Night (Top Commander)', start: '2026-09-21', end: '2026-09-27', rrule: 'FREQ=WEEKLY;UNTIL=20261004;INTERVAL=2;BYDAY=MO', backgroundColor: 'rgba(233, 30, 99, 0.7)', borderColor: 'rgba(233, 30, 99, 1)' }
             ];
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -101,10 +111,11 @@
                     center: 'title',
                     right: 'dayGridMonth,listWeek'
                 },
-                events: eventosFixos, // <-- Aqui ele usa a lista que criamos acima
+                events: eventosFixos,
                 eventDisplay: 'block',
                 dayMaxEvents: 3,
-                height: 'auto'
+                height: 'auto',
+                eventTextColor: '#ffffff' // Força o texto a ser branco para contrastar com o fundo escuro
             });
             calendar.render();
         });
