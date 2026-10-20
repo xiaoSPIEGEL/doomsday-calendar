@@ -9,51 +9,100 @@
     <link href='https://unpkg.com/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
     
     <style>
-        /* --- NIGHT MODE E CUSTOMIZAÇÃO --- */
+        /* --- CONFIGURAÇÃO DO FUNDO --- */
         body { 
             font-family: Arial, sans-serif; 
-            margin: 20px; 
-            background-color: #111; 
+            margin: 0; 
+            padding: 20px;
             color: #e0e0e0; 
-        }
-        h1 { text-align: center; color: #e0e0e0; margin-bottom: 5px; }
-        
-        /* --- RELÓGIO DO JOGO --- */
-        #game-clock { 
-            text-align: center; 
-            font-size: 1.1em; 
-            font-weight: bold; 
-            color: #ff9800; /* Laranja para destaque */
-            margin-bottom: 20px; 
-            background-color: #1e1e1e;
-            padding: 10px;
-            border-radius: 8px;
-            max-width: 300px;
-            margin-left: auto;
-            margin-right: auto;
-            border: 1px solid #333;
+            
+            /* AQUI ENTRA A SUA IMAGEM DE FUNDO */
+            /* O linear-gradient escurece a imagem para o texto ficar legível */
+            background: linear-gradient(rgba(17, 17, 17, 0.85), rgba(17, 17, 17, 0.85)), 
+                        url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
         }
 
-        /* Aumentei a largura máxima para dar mais espaço */
-        #calendar { 
-            max-width: 1200px; 
-            margin: 0 auto; 
+        /* --- CONTAINER PRINCIPAL E HEADER --- */
+        .header-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        /* AQUI ENTRA A SUA IMAGEM DE HEADER */
+        .header-container img {
+            max-width: 600px; /* Ajusta o tamanho da imagem sem perder a proporção */
+            width: 100%;
+            height: auto;
+        }
+
+        /* --- LAYOUT DE DUAS COLUNAS --- */
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1500px;
+            margin: 0 auto;
+            align-items: flex-start; /* Alinha as colunas no topo */
+        }
+
+        /* --- COLUNA ESQUERDA: CALENDÁRIO --- */
+        .calendar-column {
+            flex: 3; /* Ocupa 3 partes do espaço */
             background: #1e1e1e; 
             padding: 20px; 
             border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5); 
-            color: #e0e0e0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.8); 
         }
 
-        .fc-theme-standard th {
-            background-color: #101010 !important;
-            border-color: #333;
+        /* --- COLUNA DIREITA: SIDEBAR (RELÓGIO E CHECKBOXES) --- */
+        .sidebar-column {
+            flex: 1; /* Ocupa 1 parte do espaço */
+            min-width: 280px;
+            background: #1e1e1e; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.8); 
         }
 
-        /* Barras dos eventos */
+        /* RELÓGIO */
+        #game-clock { 
+            text-align: center; 
+            font-size: 1.5em; 
+            font-weight: bold; 
+            color: #ff9800; 
+            margin-bottom: 25px; 
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #111;
+        }
+
+        /* CHECKBOXES */
+        .checkbox-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.95em;
+            cursor: pointer;
+            color: #ccc;
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: #ff9800; /* Deixa o check laranja */
+            cursor: pointer;
+        }
+
+        /* --- ESTILOS DO CALENDÁRIO (MANTIDOS) --- */
+        .fc-theme-standard th { background-color: #101010 !important; border-color: #333; }
         .fc-event { 
-            padding: 4px 4px !important; /* Reduzi o padding lateral */
-            font-size: 0.8em; /* Fonte levemente menor */
+            padding: 4px 4px !important; 
+            font-size: 0.8em; 
             border-radius: 4px; 
             font-weight: bold;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.9); 
@@ -61,54 +110,71 @@
             cursor: pointer;
             margin-top: 1px;
         }
-
-        /* A MÁGICA PARA O TEXTO NÃO CORTAR: Permite quebra de linha */
-        .fc-event-title {
-            white-space: normal !important;
-            line-height: 1.2;
-        }
-        
-        .fc-daygrid-body tr { 
-            border-bottom: 2px solid #333 !important; 
-        }
-
+        .fc-event-title { white-space: normal !important; line-height: 1.2; }
+        .fc-daygrid-body tr { border-bottom: 2px solid #333 !important; }
         .fc-col-header-cell-cushion, .fc-daygrid-day-number { color: #e0e0e0; }
         .fc-toolbar-title { color: #e0e0e0; }
         .fc-button-primary { background-color: #333; border-color: #444; }
         .fc-button-primary:hover { background-color: #ff9800; border-color: #ff9800; color: #111;}
         
-        @media (max-width: 768px) {
-            #calendar { padding: 10px; }
-            .fc-event { font-size: 0.7em; padding: 2px 2px !important; }
+        /* Responsividade para celular: empilha as colunas */
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; }
+            .calendar-column, .sidebar-column { width: 100%; box-sizing: border-box; }
         }
     </style>
 </head>
 <body>
 
-    <h1>Doomsday: Last Survivors - Alliance Calendar</h1>
-    
-    <!-- O RELÓGIO AQUI -->
-    <div id="game-clock">Game Time: --:--:-- UTC</div>
+    <!-- HEADER PERSONALIZADO -->
+    <div class="header-container">
+        <!-- Substitua "header.png" pelo nome exato da sua imagem -->
+        <img src="header.png" alt="Alliance Calendar Header">
+    </div>
 
-    <div id="calendar"></div>
+    <!-- CONTAINER PRINCIPAL COM AS DUAS COLUNAS -->
+    <div class="main-container">
+        
+        <!-- COLUNA ESQUERDA -->
+        <div class="calendar-column">
+            <div id="calendar"></div>
+        </div>
+
+        <!-- COLUNA DIREITA -->
+        <div class="sidebar-column">
+            <div id="game-clock">Game Time: --:--:-- UTC</div>
+            
+            <h3 style="color: #e0e0e0; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px;">Notify Me</h3>
+            <div class="checkbox-list">
+                <label class="checkbox-item"><input type="checkbox" value="Water War"> Water War</label>
+                <label class="checkbox-item"><input type="checkbox" value="Anpede Hunt"> Anpede Hunt</label>
+                <label class="checkbox-item"><input type="checkbox" value="Horde Defense"> Horde Defense</label>
+                <label class="checkbox-item"><input type="checkbox" value="Pompeii"> The Recovery Of Pompeii</label>
+                <label class="checkbox-item"><input type="checkbox" value="Off-Limits"> Off-Limits War</label>
+                <label class="checkbox-item"><input type="checkbox" value="All-Star"> All-Star Night</label>
+                <label class="checkbox-item"><input type="checkbox" value="Alliance League"> Alliance League</label>
+                <label class="checkbox-item"><input type="checkbox" value="Archipelago"> Archipelago Raid</label>
+                <label class="checkbox-item"><input type="checkbox" value="Island"> Island Raid</label>
+                <label class="checkbox-item"><input type="checkbox" value="District"> District Showdown</label>
+                <label class="checkbox-item"><input type="checkbox" value="Extreme"> Extreme Showdown</label>
+            </div>
+        </div>
+
+    </div>
 
     <script src='https://unpkg.com/fullcalendar@6.1.15/index.global.min.js'></script>
 
     <script>
-        // --- LÓGICA DO RELÓGIO (UTC/GMT+0) ---
+        // --- LÓGICA DO RELÓGIO (UTC) ---
         function updateClock() {
             const now = new Date();
-            // Pega a hora UTC e formata com dois dígitos (ex: 09, 15)
             const utcHours = String(now.getUTCHours()).padStart(2, '0');
             const utcMinutes = String(now.getUTCMinutes()).padStart(2, '0');
             const utcSeconds = String(now.getUTCSeconds()).padStart(2, '0');
-            
             document.getElementById('game-clock').innerText = `Game Time: ${utcHours}:${utcMinutes}:${utcSeconds} UTC`;
         }
-        
-        // Atualiza a cada 1 segundo (1000 milissegundos)
         setInterval(updateClock, 1000);
-        updateClock(); // Roda uma vez imediatamente ao carregar a página
+        updateClock();
 
         // --- LÓGICA DO CALENDÁRIO ---
         document.addEventListener('DOMContentLoaded', function() {
@@ -153,7 +219,7 @@
                 let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 let isWeek1 = (Math.round(diffDays / 7) % 2 === 0);
 
-                // --- SEGUNDA ---
+                // SEGUNDA
                 if (dayOfWeek === 1) {
                     let end = new Date(d); end.setDate(end.getDate() + 3);
                     eventos.push({ title: 'Water War', start: formatDate(d), end: formatDate(end), ...cores['Water War'] });
@@ -167,7 +233,7 @@
                     }
                 }
 
-                // --- TERÇA ---
+                // TERÇA
                 if (dayOfWeek === 2) {
                     if (isWeek1) {
                         let end = new Date(d); end.setDate(end.getDate() + 1);
@@ -183,7 +249,7 @@
                     }
                 }
 
-                // --- QUARTA ---
+                // QUARTA
                 if (dayOfWeek === 3) {
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
@@ -198,7 +264,7 @@
                     }
                 }
 
-                // --- SEXTA ---
+                // SEXTA
                 if (dayOfWeek === 5) {
                     if (Math.ceil(monthDate / 7) === 2) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
@@ -214,7 +280,7 @@
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 firstDay: 1, 
-                dayHeaderFormat: { weekday: 'long' }, // <--- FORÇA O DIA DA SEMANA POR EXTENSO
+                dayHeaderFormat: { weekday: 'long' }, 
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
@@ -222,7 +288,7 @@
                 },
                 events: eventos,
                 eventDisplay: 'block', 
-                dayMaxEvents: 5, // Aumentei para 5, caso tenha muitos eventos no dia
+                dayMaxEvents: 4, 
                 height: 'auto',
                 eventTextColor: '#ffffff' 
             });
