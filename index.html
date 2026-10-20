@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doomsday: Last Survivors - Event Calendar</title>
+    <title>Doomsday: Last Survivors - Event Tracker</title>
 
     <!-- Estilos do FullCalendar (Versão 6) -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
@@ -28,24 +28,24 @@
             color: #e0e0e0;
         }
 
-        /* CORREÇÃO DO CABEÇALHO: Fundo bem escuro */
+        /* Cabeçalho com fundo bem escuro (#101010) */
         .fc-theme-standard th {
             background-color: #101010 !important;
             border-color: #333;
         }
 
-        /* Deixa as barras dos eventos mais grossas e com cor de destaque (Laranja) */
+        /* Barras dos eventos mais grossas e laranjas */
         .fc-event { 
             padding: 6px 4px !important; 
             font-size: 0.9em; 
             border: none; 
             border-radius: 4px; 
-            background-color: #ff9800; /* Laranja claro */
-            color: #111; /* Texto escuro dentro da barra laranja */
+            background-color: #ff9800; 
+            color: #111; 
             font-weight: bold;
         }
         
-        /* Deixa a linha divisória entre as semanas mais visível */
+        /* Linha divisória entre as semanas */
         .fc-daygrid-body tr { 
             border-bottom: 2px solid #333 !important; 
         }
@@ -65,51 +65,48 @@
 </head>
 <body>
 
-    <h1>Doomsday: Last Survivors - Event Calendar</h1>
+    <h1>Doomsday: Last Survivors - Event Tracker</h1>
     <div id="calendar"></div>
 
-    <!-- Bibliotecas JavaScript (Versão 6) -->
+    <!-- Apenas o FullCalendar principal (sem bibliotecas de leitura de .ics) -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    
-    <!-- O plugin do iCalendar PARA A VERSÃO 6 -->
-    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/icalendar@6.1.15/index.global.min.js'></script>
-    
-    <!-- A BIBLIOTECA ICAL.JS (Agora com link corrigido e seguro) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ical.js/1.5.0/ical.min.js"></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             
-            // Buscamos o arquivo .ics manualmente
-            fetch('doomsday-calendar.ics')
-                .then(response => {
-                    if (!response.ok) throw new Error('Arquivo não encontrado');
-                    return response.text();
-                })
-                .then(data => {
-                    var calendar = new FullCalendar.Calendar(calendarEl, {
-                        initialView: 'dayGridMonth',
-                        // locale: 'pt-br', <-- REMOVIDO PARA FICAR EM INGLÊS
-                        headerToolbar: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'dayGridMonth,listWeek'
-                        },
-                        events: {
-                            url: 'data:text/calendar;charset=utf8,' + encodeURIComponent(data),
-                            format: 'ics'
-                        },
-                        eventDisplay: 'block',
-                        dayMaxEvents: 3,
-                        height: 'auto'
-                    });
-                    calendar.render();
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar o calendário:', error);
-                    calendarEl.innerHTML = '<p style="text-align:center; color:#ff9800;">Error loading events. Check if the .ics file is in the repository.</p>';
-                });
+            // AQUI ESTÃO OS SEUS EVENTOS, JÁ EXTRAÍDOS DO ARQUIVO .ics
+            // O formato é: { title: 'Nome', start: 'AAAA-MM-DD', end: 'AAAA-MM-DD', rrule: 'regra de repetição' }
+            var eventosFixos = [
+                // --- Eventos Semanais e Quinzenais ---
+                { title: 'Water War', start: '2026-09-28', end: '2026-10-01', rrule: 'FREQ=WEEKLY;BYDAY=MO' },
+                { title: 'Anpede Hunt', start: '2026-09-28', end: '2026-09-29', rrule: 'FREQ=WEEKLY;BYDAY=MO' },
+                { title: 'Off-Limits War', start: '2026-09-29', end: '2026-09-30', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU' },
+                { title: 'Horde Defense', start: '2026-09-30', end: '2026-10-01', rrule: 'FREQ=WEEKLY;BYDAY=WE' },
+                { title: 'The Recovery Of Pompeii', start: '2026-10-06', end: '2026-10-07', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU' },
+                { title: 'All-Star Night', start: '2026-10-05', end: '2026-10-12', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=MO' },
+
+                // --- Eventos Mensais ---
+                { title: 'Alliance League', start: '2026-09-29', end: '2026-10-05', rrule: 'FREQ=MONTHLY;BYDAY=-1TU' },
+                { title: 'District Showdown', start: '2026-10-09', end: '2026-10-12', rrule: 'FREQ=MONTHLY;BYDAY=2FR' },
+                { title: 'Archipelago Raid (AR)', start: '2026-10-14', end: '2026-10-19', rrule: 'FREQ=MONTHLY;BYDAY=2WE' },
+                { title: 'Extreme Showdown', start: '2026-10-23', end: '2026-10-26', rrule: 'FREQ=MONTHLY;BYDAY=4FR' },
+                { title: 'All-Star Night (Top Commander)', start: '2026-09-21', end: '2026-09-27', rrule: 'FREQ=WEEKLY;UNTIL=20261004;INTERVAL=2;BYDAY=MO' }
+            ];
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,listWeek'
+                },
+                events: eventosFixos, // <-- Aqui ele usa a lista que criamos acima
+                eventDisplay: 'block',
+                dayMaxEvents: 3,
+                height: 'auto'
+            });
+            calendar.render();
         });
     </script>
 </body>
