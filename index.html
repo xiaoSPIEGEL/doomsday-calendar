@@ -43,29 +43,52 @@
         .fc-button-primary { background-color: #333; border-color: #444; }
         .fc-button-primary:hover { background-color: #ff9800; border-color: #ff9800; color: #111;}
 
-        /* --- ANIMAÇÃO DO DIA ATUAL (PISCA-PISCA SUAVE) --- */
-        @keyframes pulse-today {
-            0% { background-color: rgba(255, 152, 0, 0.15); }
-            50% { background-color: rgba(255, 152, 0, 0.45); }
-            100% { background-color: rgba(255, 152, 0, 0.15); }
-        }
-        
-        /* Sobrescreve o fundo padrão do dia de hoje */
-        .fc-day-today {
-            animation: pulse-today 3s infinite ease-in-out !important;
-            background-color: transparent !important; 
-            position: relative; /* Necessário para posicionar o ícone */
+        /* --- ANIMAÇÃO DE ZOOM (PULSAÇÃO) DO DIA ATUAL --- */
+        @keyframes zoom-today {
+            0% { 
+                transform: scale(0.95); 
+                background-color: rgba(255, 152, 0, 0.1); 
+                box-shadow: 0 0 5px rgba(255, 152, 0, 0.2); 
+                z-index: 1;
+                border: 1px solid rgba(255, 152, 0, 0.3);
+            }
+            50% { 
+                transform: scale(1.15); 
+                background-color: rgba(255, 152, 0, 0.3); 
+                box-shadow: 0 0 25px rgba(255, 152, 0, 0.8); 
+                z-index: 20; /* Fica por cima dos outros dias */
+                border: 1px solid rgba(255, 152, 0, 1);
+            }
+            100% { 
+                transform: scale(0.95); 
+                background-color: rgba(255, 152, 0, 0.1); 
+                box-shadow: 0 0 5px rgba(255, 152, 0, 0.2); 
+                z-index: 1;
+                border: 1px solid rgba(255, 152, 0, 0.3);
+            }
         }
 
-        /* Estilo do ícone da pessoa */
+        .fc-day-today {
+            animation: zoom-today 1s infinite ease-in-out !important;
+            background-color: transparent !important; /* O fundo é controlado pela animação */
+            position: relative; 
+            border-radius: 8px;
+            /* Impede que o calendário corte o zoom */
+            overflow: visible !important; 
+        }
+        
+        /* Tira o fundo padrão do FullCalendar */
+        .fc-day-today .fc-daygrid-day-frame {
+            background-color: transparent !important;
+        }
+
+        /* --- ESTILO DO ÍCONE AO LADO DO NÚMERO --- */
         .today-icon {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            font-size: 16px;
+            font-size: 20px;
             color: #ff9800;
+            vertical-align: middle;
+            margin-right: 5px; /* Espaço entre o ícone e o número */
             text-shadow: 0 0 5px rgba(0,0,0,0.8);
-            z-index: 10;
         }
         
         @media (max-width: 900px) {
@@ -175,7 +198,7 @@
             const target = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 45, 0));
             let msUntilTarget = target.getTime() - now.getTime();
 
-            if (msUntilTarget < 0) return; // Se já passou, ignora hoje
+            if (msUntilTarget < 0) return;
 
             setTimeout(() => {
                 triggerNotifications();
@@ -277,17 +300,14 @@
                     }
                 }
 
-                // WASTELAND EXPLORATION (CORRIGIDO)
+                // WASTELAND EXPLORATION
                 if (dayOfWeek === 2) {
-                    // Cria as datas em UTC para evitar problemas de fuso horário
                     let target = new Date('2026-10-20T00:00:00Z');
                     let current = new Date(formatDate(d) + 'T00:00:00Z');
-                    
                     let diffW = Math.round((current - target) / (1000 * 60 * 60 * 24));
                     
-                    // Se a diferença for maior ou igual a zero e múltipla de 14
                     if (diffW >= 0 && diffW % 14 === 0) {
-                        let end = new Date(d); end.setDate(end.getDate() + 3); // Terça a Quinta
+                        let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'Wasteland Exploration', start: formatDate(d), end: formatDate(end), ...cores['Wasteland Exploration'] });
                     }
                 }
@@ -337,13 +357,26 @@
                 height: 'auto',
                 eventTextColor: '#ffffff',
                 
-                // --- INJETA O ÍCONE NO DIA DE HOJE ---
+                // --- INJETA O ÍCONE AO LADO DO NÚMERO ---
                 dayCellDidMount: function(arg) {
                     if (arg.isToday) {
-                        var icon = document.createElement('span');
-                        icon.className = 'material-symbols-outlined today-icon';
-                        icon.innerText = 'person';
-                        arg.el.appendChild(icon);
+                        var topEl = arg.el.querySelector('.fc-daygrid-day-top');
+                        if (topEl) {
+                            // Transforma o container do topo em Flexbox para alinhar o ícone e o número
+                            topEl.style.display = 'flex';
+                            topEl.style.alignItems = 'center';
+                            topEl.style.justifyContent = 'flex-end'; // Mantém alinhado à direita
+                            
+                            var numEl = topEl.querySelector('.fc-daygrid-day-number');
+                            
+                            // Cria o ícone
+                            var icon = document.createElement('span');
+                            icon.className = 'material-symbols-outlined today-icon';
+                            icon.innerText = 'person';
+                            
+                            // Insere o ícone ANTES do número
+                            topEl.insertBefore(icon, numEl);
+                        }
                     }
                 }
             });
