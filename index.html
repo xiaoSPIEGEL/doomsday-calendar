@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doomsday: Last Survivors - Alliance Calendar</title>
 
+    <!-- Fonte Sci-Fi para o Header -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+
     <!-- Estilos do FullCalendar -->
     <link href='https://unpkg.com/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
     
@@ -16,24 +19,32 @@
             padding: 20px;
             color: #e0e0e0; 
             
-            /* AQUI ENTRA A SUA IMAGEM DE FUNDO */
-            /* O linear-gradient escurece a imagem para o texto ficar legível */
+            /* Fundo apontando para a imagem correta */
             background: linear-gradient(rgba(17, 17, 17, 0.85), rgba(17, 17, 17, 0.85)), 
                         url('background.png') no-repeat center center fixed;
             background-size: cover;
         }
 
-        /* --- CONTAINER PRINCIPAL E HEADER --- */
+        /* --- CONTAINER PRINCIPAL E HEADER DE TEXTO --- */
         .header-container {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            margin-top: 10px;
         }
         
-        /* AQUI ENTRA A SUA IMAGEM DE HEADER */
-        .header-container img {
-            max-width: 600px; /* Ajusta o tamanho da imagem sem perder a proporção */
-            width: 100%;
-            height: auto;
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 0;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        
+        .header-title span { 
+            color: #ff9800; 
+            text-shadow: 0 0 15px rgba(255, 152, 0, 0.8);
         }
 
         /* --- LAYOUT DE DUAS COLUNAS --- */
@@ -42,21 +53,21 @@
             gap: 20px;
             max-width: 1500px;
             margin: 0 auto;
-            align-items: flex-start; /* Alinha as colunas no topo */
+            align-items: flex-start;
         }
 
         /* --- COLUNA ESQUERDA: CALENDÁRIO --- */
         .calendar-column {
-            flex: 3; /* Ocupa 3 partes do espaço */
+            flex: 3; 
             background: #1e1e1e; 
             padding: 20px; 
             border-radius: 8px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.8); 
         }
 
-        /* --- COLUNA DIREITA: SIDEBAR (RELÓGIO E CHECKBOXES) --- */
+        /* --- COLUNA DIREITA: SIDEBAR --- */
         .sidebar-column {
-            flex: 1; /* Ocupa 1 parte do espaço */
+            flex: 1; 
             min-width: 280px;
             background: #1e1e1e; 
             padding: 20px; 
@@ -75,6 +86,7 @@
             border-radius: 8px;
             border: 1px solid #333;
             background-color: #111;
+            font-family: 'Orbitron', sans-serif; /* Relógio também em fonte tech */
         }
 
         /* CHECKBOXES */
@@ -94,11 +106,11 @@
             margin-right: 10px;
             width: 18px;
             height: 18px;
-            accent-color: #ff9800; /* Deixa o check laranja */
+            accent-color: #ff9800; 
             cursor: pointer;
         }
 
-        /* --- ESTILOS DO CALENDÁRIO (MANTIDOS) --- */
+        /* --- ESTILOS DO CALENDÁRIO --- */
         .fc-theme-standard th { background-color: #101010 !important; border-color: #333; }
         .fc-event { 
             padding: 4px 4px !important; 
@@ -117,22 +129,22 @@
         .fc-button-primary { background-color: #333; border-color: #444; }
         .fc-button-primary:hover { background-color: #ff9800; border-color: #ff9800; color: #111;}
         
-        /* Responsividade para celular: empilha as colunas */
+        /* Responsividade para celular */
         @media (max-width: 900px) {
             .main-container { flex-direction: column; }
             .calendar-column, .sidebar-column { width: 100%; box-sizing: border-box; }
+            .header-title { font-size: 1.8em; } /* Fonte menor no celular */
         }
     </style>
 </head>
 <body>
 
-    <!-- HEADER PERSONALIZADO -->
+    <!-- HEADER DE TEXTO -->
     <div class="header-container">
-        <!-- Substitua "header.png" pelo nome exato da sua imagem -->
-        <img src="header.png" alt="Alliance Calendar Header">
+        <h1 class="header-title">XIAOSPIEGEL <span>EVENT TRACKER</span></h1>
     </div>
 
-    <!-- CONTAINER PRINCIPAL COM AS DUAS COLUNAS -->
+    <!-- CONTAINER PRINCIPAL -->
     <div class="main-container">
         
         <!-- COLUNA ESQUERDA -->
