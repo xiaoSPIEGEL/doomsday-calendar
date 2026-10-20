@@ -31,35 +31,7 @@
     <h1>Doomsday: Last Survivors - Alliance Calendar</h1>
     <div id="calendar"></div>
 
-    <!-- Bibliotecas JavaScript (Versão 6 - Tudo em um único arquivo) -->
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    
-    <!-- O plugin do iCalendar para a versão 6 -->
-    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/icalendar@6.1.15/index.global.min.js'></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'pt-br',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,listWeek'
-                },
-                // Aqui ele lê o SEU arquivo .ics
-                events: {
-                    url: 'doomsday-calendar.ics', 
-                    format: 'ics'
-                },
-                eventDisplay: 'block',
-                dayMaxEvents: 3,
-                height: 'auto'
-            });
-            calendar.render();
-        });
-        <!-- Bibliotecas JavaScript (Versão 6) -->
+    <!-- Bibliotecas JavaScript (Versão 6) -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     
     <!-- O plugin do iCalendar e o leitor (ical.js) -->
