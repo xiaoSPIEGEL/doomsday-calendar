@@ -9,15 +9,47 @@
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
     
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
-        h1 { text-align: center; color: #333; }
-        #calendar { max-width: 1100px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        /* --- NIGHT MODE E CUSTOMIZAÇÃO --- */
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: #111; /* Fundo escuro */
+            color: #e0e0e0; /* Texto cinza claro */
+        }
+        h1 { text-align: center; color: #e0e0e0; }
         
-        /* --- CUSTOMIZAÇÃO PEDIDA PELA ALIANÇA --- */
-        /* Deixa as barras dos eventos mais grossas */
-        .fc-event { padding: 6px 4px !important; font-size: 0.9em; border: none; border-radius: 4px; }
-        /* Deixa a linha divisória entre as semanas mais visível */
-        .fc-daygrid-body tr { border-bottom: 2px solid #e0e0e0 !important; }
+        #calendar { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            background: #1e1e1e; /* Fundo do calendário um pouco mais claro que o body */
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5); 
+            color: #e0e0e0;
+        }
+
+        /* Deixa as barras dos eventos mais grossas e com cor de destaque (Laranja) */
+        .fc-event { 
+            padding: 6px 4px !important; 
+            font-size: 0.9em; 
+            border: none; 
+            border-radius: 4px; 
+            background-color: #ff9800; /* Laranja claro */
+            color: #111; /* Texto escuro dentro da barra laranja para dar contraste */
+            font-weight: bold;
+        }
+        
+        /* Deixa a linha divisória entre as semanas mais visível no modo escuro */
+        .fc-daygrid-body tr { 
+            border-bottom: 2px solid #333 !important; 
+        }
+
+        /* Ajustes para o FullCalendar no modo escuro */
+        .fc-theme-standard td, .fc-theme-standard th { border-color: #333; }
+        .fc-col-header-cell-cushion, .fc-daygrid-day-number { color: #e0e0e0; }
+        .fc-toolbar-title { color: #e0e0e0; }
+        .fc-button-primary { background-color: #333; border-color: #444; }
+        .fc-button-primary:hover { background-color: #ff9800; border-color: #ff9800; color: #111;}
         
         /* Melhora o visual no celular */
         @media (max-width: 768px) {
@@ -33,16 +65,14 @@
 
     <!-- Bibliotecas JavaScript (Versão 6) -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    
-    <!-- O plugin do iCalendar e o leitor (ical.js) -->
+    <!-- O plugin do iCalendar para a versão 6 -->
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/icalendar@6.1.15/index.global.min.js'></script>
-    <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/dist/ical.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             
-            // Buscamos o arquivo .ics manualmente para evitar bloqueios do navegador
+            // Buscamos o arquivo .ics manualmente
             fetch('doomsday-calendar.ics')
                 .then(response => {
                     if (!response.ok) throw new Error('Arquivo não encontrado');
@@ -59,7 +89,7 @@
                             right: 'dayGridMonth,listWeek'
                         },
                         events: {
-                            // Entrega o texto do arquivo para o FullCalendar ler
+                            // O FullCalendar lê o texto do arquivo nativamente agora
                             url: 'data:text/calendar;charset=utf8,' + encodeURIComponent(data),
                             format: 'ics'
                         },
@@ -71,7 +101,7 @@
                 })
                 .catch(error => {
                     console.error('Erro ao carregar o calendário:', error);
-                    calendarEl.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar os eventos. Verifique se o arquivo .ics está no repositório.</p>';
+                    calendarEl.innerHTML = '<p style="text-align:center; color:#ff9800;">Erro ao carregar os eventos. Verifique se o arquivo .ics está no repositório.</p>';
                 });
         });
     </script>
