@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doomsday: Last Survivors - Alliance Calendar</title>
 
-    <!-- Estilos do FullCalendar (Versão 6) -->
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
+    <!-- Estilos do FullCalendar (Versão 6) - Usando unpkg agora -->
+    <link href='https://unpkg.com/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
     
     <style>
         /* --- NIGHT MODE E CUSTOMIZAÇÃO --- */
@@ -68,11 +68,14 @@
     <h1>Doomsday: Last Survivors - Alliance Calendar</h1>
     <div id="calendar"></div>
 
-    <!-- FullCalendar Principal -->
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <!-- FullCalendar Principal (unpkg) -->
+    <script src='https://unpkg.com/fullcalendar@6.1.15/index.global.min.js'></script>
     
-    <!-- O PLUGIN MÁGICO QUE FAZ A REPETIÇÃO FUNCIONAR -->
-    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/rrule@6.1.15/index.global.min.js'></script>
+    <!-- A biblioteca rrule base (necessária para a repetição) -->
+    <script src='https://unpkg.com/rrule@2.7.2/dist/es5/rrule.min.js'></script>
+    
+    <!-- O Plugin do FullCalendar que conecta a rrule (unpkg) -->
+    <script src='https://unpkg.com/@fullcalendar/rrule@6.1.15/index.global.min.js'></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
