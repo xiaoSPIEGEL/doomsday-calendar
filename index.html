@@ -16,10 +16,27 @@
             background-color: #111; 
             color: #e0e0e0; 
         }
-        h1 { text-align: center; color: #e0e0e0; }
+        h1 { text-align: center; color: #e0e0e0; margin-bottom: 5px; }
         
+        /* --- RELÓGIO DO JOGO --- */
+        #game-clock { 
+            text-align: center; 
+            font-size: 1.1em; 
+            font-weight: bold; 
+            color: #ff9800; /* Laranja para destaque */
+            margin-bottom: 20px; 
+            background-color: #1e1e1e;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid #333;
+        }
+
+        /* Aumentei a largura máxima para dar mais espaço */
         #calendar { 
-            max-width: 1100px; 
+            max-width: 1200px; 
             margin: 0 auto; 
             background: #1e1e1e; 
             padding: 20px; 
@@ -33,15 +50,22 @@
             border-color: #333;
         }
 
+        /* Barras dos eventos */
         .fc-event { 
-            padding: 4px 6px !important; 
-            font-size: 0.85em; 
+            padding: 4px 4px !important; /* Reduzi o padding lateral */
+            font-size: 0.8em; /* Fonte levemente menor */
             border-radius: 4px; 
             font-weight: bold;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.9); 
             border-width: 1px !important;
             cursor: pointer;
             margin-top: 1px;
+        }
+
+        /* A MÁGICA PARA O TEXTO NÃO CORTAR: Permite quebra de linha */
+        .fc-event-title {
+            white-space: normal !important;
+            line-height: 1.2;
         }
         
         .fc-daygrid-body tr { 
@@ -55,18 +79,38 @@
         
         @media (max-width: 768px) {
             #calendar { padding: 10px; }
-            .fc-event { font-size: 0.75em; padding: 2px 4px !important; }
+            .fc-event { font-size: 0.7em; padding: 2px 2px !important; }
         }
     </style>
 </head>
 <body>
 
     <h1>Doomsday: Last Survivors - Alliance Calendar</h1>
+    
+    <!-- O RELÓGIO AQUI -->
+    <div id="game-clock">Game Time: --:--:-- UTC</div>
+
     <div id="calendar"></div>
 
     <script src='https://unpkg.com/fullcalendar@6.1.15/index.global.min.js'></script>
 
     <script>
+        // --- LÓGICA DO RELÓGIO (UTC/GMT+0) ---
+        function updateClock() {
+            const now = new Date();
+            // Pega a hora UTC e formata com dois dígitos (ex: 09, 15)
+            const utcHours = String(now.getUTCHours()).padStart(2, '0');
+            const utcMinutes = String(now.getUTCMinutes()).padStart(2, '0');
+            const utcSeconds = String(now.getUTCSeconds()).padStart(2, '0');
+            
+            document.getElementById('game-clock').innerText = `Game Time: ${utcHours}:${utcMinutes}:${utcSeconds} UTC`;
+        }
+        
+        // Atualiza a cada 1 segundo (1000 milissegundos)
+        setInterval(updateClock, 1000);
+        updateClock(); // Roda uma vez imediatamente ao carregar a página
+
+        // --- LÓGICA DO CALENDÁRIO ---
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             
@@ -169,7 +213,8 @@
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                firstDay: 1, // <--- A MÁGICA ACONTECE AQUI! (1 = Segunda-feira)
+                firstDay: 1, 
+                dayHeaderFormat: { weekday: 'long' }, // <--- FORÇA O DIA DA SEMANA POR EXTENSO
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
@@ -177,7 +222,7 @@
                 },
                 events: eventos,
                 eventDisplay: 'block', 
-                dayMaxEvents: 4, 
+                dayMaxEvents: 5, // Aumentei para 5, caso tenha muitos eventos no dia
                 height: 'auto',
                 eventTextColor: '#ffffff' 
             });
