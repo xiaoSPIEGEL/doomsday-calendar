@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doomsday: Last Survivors - Alliance Calendar</title>
 
-    <!-- Estilos do FullCalendar (Usando CDN confiável) -->
+    <!-- Estilos do FullCalendar -->
     <link href='https://unpkg.com/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
     
     <style>
@@ -34,15 +34,16 @@
             border-color: #333;
         }
 
-        /* Barras dos eventos */
+        /* Barras dos eventos: Altura, Sombra e Formato */
         .fc-event { 
-            padding: 4px 4px !important; 
+            padding: 4px 6px !important; 
             font-size: 0.85em; 
-            border-radius: 3px; 
+            border-radius: 4px; 
             font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9); /* Sombra para o texto não sumir no fundo claro */
             border-width: 1px !important;
             cursor: pointer;
-            margin-bottom: 2px;
+            margin-top: 1px;
         }
         
         /* Linha divisória entre as semanas */
@@ -59,7 +60,7 @@
         /* Melhora o visual no celular */
         @media (max-width: 768px) {
             #calendar { padding: 10px; }
-            .fc-event { font-size: 0.75em; padding: 2px !important; }
+            .fc-event { font-size: 0.75em; padding: 2px 4px !important; }
         }
     </style>
 </head>
@@ -76,26 +77,25 @@
             var calendarEl = document.getElementById('calendar');
             
             // =========================================================
-            // O "ROBÔ" QUE CALCULA AS DATAS (SEM PRECISAR DE RRULE)
-            // Ele vai gerar os eventos exatamente como no seu Google.
+            // O MOTOR DE CÁLCULO DE DATAS E CORES
             // =========================================================
             var eventos = [];
-            var startDate = new Date('2026-09-28'); // Uma segunda-feira para começar
-            var endDate = new Date('2027-12-31');   // Vai gerar até o fim de 2027
-            var cycleStart = new Date('2026-10-05'); // Semana 1 do ciclo de 14 dias
+            var startDate = new Date('2026-09-28'); 
+            var endDate = new Date('2027-12-31');   
+            var cycleStart = new Date('2026-10-05'); 
 
-            // Cores idênticas ao seu print (RGBA com 85% de opacidade)
+            // Cores exatas (RGBA com transparência de 85% e bordas sólidas)
             var cores = {
-                'Water War': { bg: 'rgba(52, 152, 219, 0.85)', border: 'rgba(52, 152, 219, 1)' },
-                'Anpede Hunt': { bg: 'rgba(231, 76, 60, 0.85)', border: 'rgba(231, 76, 60, 1)' },
-                'Horde Defense': { bg: 'rgba(230, 126, 34, 0.85)', border: 'rgba(230, 126, 34, 1)' },
-                'Off-Limits War': { bg: 'rgba(46, 204, 113, 0.85)', border: 'rgba(46, 204, 113, 1)' },
-                'The Recovery Of Pompeii': { bg: 'rgba(155, 89, 182, 0.85)', border: 'rgba(155, 89, 182, 1)' },
-                'All-Star Night': { bg: 'rgba(233, 30, 99, 0.85)', border: 'rgba(233, 30, 99, 1)' },
-                'Alliance League': { bg: 'rgba(241, 196, 15, 0.85)', border: 'rgba(241, 196, 15, 1)' },
-                'District Showdown': { bg: 'rgba(26, 188, 156, 0.85)', border: 'rgba(26, 188, 156, 1)' },
-                'Archipelago Raid (AR)': { bg: 'rgba(142, 68, 173, 0.85)', border: 'rgba(142, 68, 173, 1)' },
-                'Extreme Showdown': { bg: 'rgba(149, 165, 166, 0.85)', border: 'rgba(149, 165, 166, 1)' }
+                'Water War': { backgroundColor: 'rgba(52, 152, 219, 0.85)', borderColor: 'rgba(52, 152, 219, 1)' },
+                'Anpede Hunt': { backgroundColor: 'rgba(231, 76, 60, 0.85)', borderColor: 'rgba(231, 76, 60, 1)' },
+                'Horde Defense': { backgroundColor: 'rgba(230, 126, 34, 0.85)', borderColor: 'rgba(230, 126, 34, 1)' },
+                'Off-Limits War': { backgroundColor: 'rgba(46, 204, 113, 0.85)', borderColor: 'rgba(46, 204, 113, 1)' },
+                'The Recovery Of Pompeii': { backgroundColor: 'rgba(155, 89, 182, 0.85)', borderColor: 'rgba(155, 89, 182, 1)' },
+                'All-Star Night': { backgroundColor: 'rgba(233, 30, 99, 0.85)', borderColor: 'rgba(233, 30, 99, 1)' },
+                'Alliance League': { backgroundColor: 'rgba(241, 196, 15, 0.85)', borderColor: 'rgba(241, 196, 15, 1)' },
+                'District Showdown': { backgroundColor: 'rgba(26, 188, 156, 0.85)', borderColor: 'rgba(26, 188, 156, 1)' },
+                'Archipelago Raid (AR)': { backgroundColor: 'rgba(142, 68, 173, 0.85)', borderColor: 'rgba(142, 68, 173, 1)' },
+                'Extreme Showdown': { backgroundColor: 'rgba(149, 165, 166, 0.85)', borderColor: 'rgba(149, 165, 166, 1)' }
             };
 
             var formatDate = (date) => {
@@ -109,17 +109,16 @@
             };
 
             for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-                let dayOfWeek = d.getDay(); // 0=Dom, 1=Seg, 2=Ter...
+                let dayOfWeek = d.getDay(); 
                 let monthDate = d.getDate();
                 let nextWeek = new Date(d);
                 nextWeek.setDate(nextWeek.getDate() + 7);
 
-                // Verifica se estamos na Semana 1 ou 2 do ciclo de 14 dias
                 let diffTime = Math.abs(d - cycleStart);
                 let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 let isWeek1 = (Math.floor(diffDays / 7) % 2 === 0);
 
-                // --- TODA SEGUNDA ---
+                // --- SEGUNDA ---
                 if (dayOfWeek === 1) {
                     // Water War (Seg a Qua)
                     let end = new Date(d); end.setDate(end.getDate() + 3);
@@ -136,10 +135,10 @@
                     }
                 }
 
-                // --- TODA TERÇA ---
+                // --- TERÇA ---
                 if (dayOfWeek === 2) {
-                    // Pompeii (Semana 1)
                     if (isWeek1) {
+                        // Pompeii (Semana 1)
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'The Recovery Of Pompeii', start: formatDate(d), end: formatDate(end), ...cores['The Recovery Of Pompeii'] });
                     } else {
@@ -148,34 +147,34 @@
                         eventos.push({ title: 'Off-Limits War', start: formatDate(d), end: formatDate(end), ...cores['Off-Limits War'] });
                     }
 
-                    // Alliance League (Última terça do mês, dura 1 semana)
+                    // Alliance League (Última terça do mês)
                     if (d.getMonth() !== nextWeek.getMonth()) {
                         let end = new Date(d); end.setDate(end.getDate() + 6);
                         eventos.push({ title: 'Alliance League', start: formatDate(d), end: formatDate(end), ...cores['Alliance League'] });
                     }
                 }
 
-                // --- TODA QUARTA ---
+                // --- QUARTA ---
                 if (dayOfWeek === 3) {
-                    // Horde Defense (Só Quarta)
+                    // Horde Defense
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
-                    // AR (2ª Quarta do mês, dura até Domingo)
+                    // AR (2ª Quarta do mês)
                     if (Math.ceil(monthDate / 7) === 2) {
                         let endAR = new Date(d); endAR.setDate(endAR.getDate() + 5);
                         eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
                     }
                 }
 
-                // --- TODA SEXTA ---
+                // --- SEXTA ---
                 if (dayOfWeek === 5) {
-                    // District Showdown (2ª Sexta, dura até Domingo)
+                    // District Showdown (2ª Sexta)
                     if (Math.ceil(monthDate / 7) === 2) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(end), ...cores['District Showdown'] });
                     }
-                    // Extreme Showdown (4ª Sexta, dura até Domingo)
+                    // Extreme Showdown (4ª Sexta)
                     else if (Math.ceil(monthDate / 7) === 4) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'Extreme Showdown', start: formatDate(d), end: formatDate(end), ...cores['Extreme Showdown'] });
@@ -184,7 +183,7 @@
             }
 
             // =========================================================
-            // INICIA O CALENDÁRIO COM OS EVENTOS GERADOS
+            // RENDERIZAÇÃO DO CALENDÁRIO
             // =========================================================
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
@@ -194,10 +193,10 @@
                     right: 'dayGridMonth,listWeek'
                 },
                 events: eventos,
-                eventDisplay: 'block', // Garante que as barras fiquem contínuas e sólidas
-                dayMaxEvents: 3,
+                eventDisplay: 'block', 
+                dayMaxEvents: 4, // Aumentei um pouco para não esconder eventos tão cedo
                 height: 'auto',
-                eventTextColor: '#ffffff'
+                eventTextColor: '#ffffff' // Força o texto a ser branco
             });
             calendar.render();
         });
