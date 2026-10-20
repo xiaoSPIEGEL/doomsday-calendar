@@ -43,52 +43,51 @@
         .fc-button-primary { background-color: #333; border-color: #444; }
         .fc-button-primary:hover { background-color: #ff9800; border-color: #ff9800; color: #111;}
 
-        /* --- ANIMAÇÃO DE ZOOM (PULSAÇÃO) DO DIA ATUAL --- */
-        @keyframes zoom-today {
-            0% { 
-                transform: scale(0.95); 
-                background-color: rgba(255, 152, 0, 0.1); 
-                box-shadow: 0 0 5px rgba(255, 152, 0, 0.2); 
-                z-index: 1;
-                border: 1px solid rgba(255, 152, 0, 0.3);
-            }
-            50% { 
-                transform: scale(1.15); 
-                background-color: rgba(255, 152, 0, 0.3); 
-                box-shadow: 0 0 25px rgba(255, 152, 0, 0.8); 
-                z-index: 20; /* Fica por cima dos outros dias */
-                border: 1px solid rgba(255, 152, 0, 1);
-            }
-            100% { 
-                transform: scale(0.95); 
-                background-color: rgba(255, 152, 0, 0.1); 
-                box-shadow: 0 0 5px rgba(255, 152, 0, 0.2); 
-                z-index: 1;
-                border: 1px solid rgba(255, 152, 0, 0.3);
-            }
+        /* --- ANIMAÇÕES SEPARADAS --- */
+        
+        /* 1. Animação de Opacidade para o Fundo do Dia */
+        @keyframes pulse-bg {
+            0% { background-color: rgba(255, 152, 0, 0.1); }
+            50% { background-color: rgba(255, 152, 0, 0.4); }
+            100% { background-color: rgba(255, 152, 0, 0.1); }
         }
 
+        /* 2. Animação de Zoom para o Ícone */
+        @keyframes pulse-icon {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.25); }
+            100% { transform: scale(0.95); }
+        }
+
+        /* Aplica a animação de fundo APENAS na célula do dia (sem zoom) */
         .fc-day-today {
-            animation: zoom-today 1s infinite ease-in-out !important;
-            background-color: transparent !important; /* O fundo é controlado pela animação */
+            animation: pulse-bg 1s infinite ease-in-out !important;
+            background-color: transparent !important; 
             position: relative; 
             border-radius: 8px;
-            /* Impede que o calendário corte o zoom */
             overflow: visible !important; 
         }
         
-        /* Tira o fundo padrão do FullCalendar */
         .fc-day-today .fc-daygrid-day-frame {
             background-color: transparent !important;
         }
 
-        /* --- ESTILO DO ÍCONE AO LADO DO NÚMERO --- */
+        /* Estilo e animação do ícone */
         .today-icon {
             font-size: 20px;
             color: #ff9800;
             vertical-align: middle;
-            margin-right: 5px; /* Espaço entre o ícone e o número */
-            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            margin-right: 4px; /* Espaço entre o ícone e o número */
+            display: inline-block; /* Necessário para o transform funcionar */
+            animation: pulse-icon 1s infinite ease-in-out; /* Animação de zoom só aqui */
+        }
+
+        /* Força o container do topo a ser flex para alinhar o ícone e o número */
+        .fc-daygrid-day-top {
+            display: flex;
+            flex-direction: row-reverse; /* Mantém o número na direita e o ícone à esquerda dele */
+            align-items: center;
+            justify-content: flex-start; /* Alinha o conteúdo à direita da célula */
         }
         
         @media (max-width: 900px) {
@@ -270,8 +269,7 @@
                 let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 let isWeek1 = (Math.round(diffDays / 7) % 2 === 0);
 
-                // SEGUNDA
-                if (dayOfWeek === 1) {
+                if (dayOfWeek === 1) { // SEGUNDA
                     let end = new Date(d); end.setDate(end.getDate() + 3);
                     eventos.push({ title: 'Water War', start: formatDate(d), end: formatDate(end), ...cores['Water War'] });
                     
@@ -284,8 +282,7 @@
                     }
                 }
 
-                // TERÇA
-                if (dayOfWeek === 2) {
+                if (dayOfWeek === 2) { // TERÇA
                     if (isWeek1) {
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'The Recovery Of Pompeii', start: formatDate(d), end: formatDate(end), ...cores['The Recovery Of Pompeii'] });
@@ -312,8 +309,7 @@
                     }
                 }
 
-                // QUARTA
-                if (dayOfWeek === 3) {
+                if (dayOfWeek === 3) { // QUARTA
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
@@ -327,8 +323,7 @@
                     }
                 }
 
-                // SEXTA
-                if (dayOfWeek === 5) {
+                if (dayOfWeek === 5) { // SEXTA
                     if (Math.ceil(monthDate / 7) === 2) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(end), ...cores['District Showdown'] });
@@ -362,19 +357,13 @@
                     if (arg.isToday) {
                         var topEl = arg.el.querySelector('.fc-daygrid-day-top');
                         if (topEl) {
-                            // Transforma o container do topo em Flexbox para alinhar o ícone e o número
-                            topEl.style.display = 'flex';
-                            topEl.style.alignItems = 'center';
-                            topEl.style.justifyContent = 'flex-end'; // Mantém alinhado à direita
-                            
                             var numEl = topEl.querySelector('.fc-daygrid-day-number');
                             
-                            // Cria o ícone
                             var icon = document.createElement('span');
                             icon.className = 'material-symbols-outlined today-icon';
                             icon.innerText = 'person';
                             
-                            // Insere o ícone ANTES do número
+                            // Insere o ícone antes do número
                             topEl.insertBefore(icon, numEl);
                         }
                     }
