@@ -1,6 +1,6 @@
 # Doomsday: Last Survivors - Alliance Event Tracker
 
-An interactive, auto-updating calendar designed specifically for the **XIAOSPIEGEL** alliance in *Doomsday: Last Survivors*. 
+An interactive, auto-updating calendar designed specifically by **XIAOSPIEGEL** for *Doomsday: Last Survivors*. 
 
 This tool automatically calculates the cycle of every major in-game event (Water War, Alliance League, Raids, etc.) based on their specific weekly, bi-weekly, and monthly rules. No more guessing when the next Off-Limits War starts!
 
@@ -25,4 +25,4 @@ We are constantly improving the tool. Here is what is planned for the future:
 - GitHub Pages
 
 ## Contributing
-Feedback and suggestions from alliance members are always welcome! If you notice an event is missing or a rule has changed, please contact **xiaoSPIEGEL** in-game or on Discord.
+Feedback and suggestions from alliance members are always welcome! If you notice an event is missing or a rule has changed, please contact **xiaoSPIEGEL** in-game.
