@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doomsday: Last Survivors - Alliance Calendar</title>
 
-    <!-- Fonte Sci-Fi para o Header -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <!-- Fontes: Orbitron (Título) e Share Tech Mono (Relógio) -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
     <!-- Estilos do FullCalendar -->
     <link href='https://unpkg.com/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
@@ -19,13 +19,12 @@
             padding: 20px;
             color: #e0e0e0; 
             
-            /* Fundo apontando para a imagem correta */
             background: linear-gradient(rgba(17, 17, 17, 0.85), rgba(17, 17, 17, 0.85)), 
                         url('background.png') no-repeat center center fixed;
             background-size: cover;
         }
 
-        /* --- CONTAINER PRINCIPAL E HEADER DE TEXTO --- */
+        /* --- HEADER --- */
         .header-container {
             text-align: center;
             margin-bottom: 30px;
@@ -51,14 +50,14 @@
         .main-container {
             display: flex;
             gap: 20px;
-            max-width: 1500px;
+            max-width: 1600px; /* Aumentei a largura máxima para dar mais espaço */
             margin: 0 auto;
             align-items: flex-start;
         }
 
         /* --- COLUNA ESQUERDA: CALENDÁRIO --- */
         .calendar-column {
-            flex: 3; 
+            flex: 4; /* Aumentado de 3 para 4 para dar mais espaço horizontal */
             background: #1e1e1e; 
             padding: 20px; 
             border-radius: 8px; 
@@ -68,7 +67,7 @@
         /* --- COLUNA DIREITA: SIDEBAR --- */
         .sidebar-column {
             flex: 1; 
-            min-width: 280px;
+            min-width: 260px; /* Diminuí um pouco a largura mínima para focar no calendário */
             background: #1e1e1e; 
             padding: 20px; 
             border-radius: 8px; 
@@ -79,14 +78,16 @@
         #game-clock { 
             text-align: center; 
             font-size: 1.5em; 
-            font-weight: bold; 
-            color: #ff9800; 
+            font-weight: normal; /* A fonte mono já tem um peso bom */
+            color: #e0e0e0; /* Mesma cor do título "October 2026" */
             margin-bottom: 25px; 
             padding: 15px;
             border-radius: 8px;
             border: 1px solid #333;
             background-color: #111;
-            font-family: 'Orbitron', sans-serif; /* Relógio também em fonte tech */
+            
+            /* Fonte monoespaçada para o relógio não ficar "dançando" */
+            font-family: 'Share Tech Mono', monospace; 
         }
 
         /* CHECKBOXES */
@@ -112,9 +113,10 @@
 
         /* --- ESTILOS DO CALENDÁRIO --- */
         .fc-theme-standard th { background-color: #101010 !important; border-color: #333; }
+        
         .fc-event { 
-            padding: 4px 4px !important; 
-            font-size: 0.8em; 
+            padding: 2px 4px !important; /* Padding levemente reduzido */
+            font-size: 0.75em; /* Fonte um pouco menor para caber melhor */
             border-radius: 4px; 
             font-weight: bold;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.9); 
@@ -122,7 +124,13 @@
             cursor: pointer;
             margin-top: 1px;
         }
-        .fc-event-title { white-space: normal !important; line-height: 1.2; }
+        
+        /* Permite quebra de linha, mas com mais espaço horizontal, não deve quebrar tanto */
+        .fc-event-title { 
+            white-space: normal !important; 
+            line-height: 1.1;
+        }
+        
         .fc-daygrid-body tr { border-bottom: 2px solid #333 !important; }
         .fc-col-header-cell-cushion, .fc-daygrid-day-number { color: #e0e0e0; }
         .fc-toolbar-title { color: #e0e0e0; }
@@ -133,7 +141,7 @@
         @media (max-width: 900px) {
             .main-container { flex-direction: column; }
             .calendar-column, .sidebar-column { width: 100%; box-sizing: border-box; }
-            .header-title { font-size: 1.8em; } /* Fonte menor no celular */
+            .header-title { font-size: 1.8em; }
         }
     </style>
 </head>
@@ -231,8 +239,7 @@
                 let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 let isWeek1 = (Math.round(diffDays / 7) % 2 === 0);
 
-                // SEGUNDA
-                if (dayOfWeek === 1) {
+                if (dayOfWeek === 1) { // SEGUNDA
                     let end = new Date(d); end.setDate(end.getDate() + 3);
                     eventos.push({ title: 'Water War', start: formatDate(d), end: formatDate(end), ...cores['Water War'] });
                     
@@ -245,8 +252,7 @@
                     }
                 }
 
-                // TERÇA
-                if (dayOfWeek === 2) {
+                if (dayOfWeek === 2) { // TERÇA
                     if (isWeek1) {
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'The Recovery Of Pompeii', start: formatDate(d), end: formatDate(end), ...cores['The Recovery Of Pompeii'] });
@@ -261,8 +267,7 @@
                     }
                 }
 
-                // QUARTA
-                if (dayOfWeek === 3) {
+                if (dayOfWeek === 3) { // QUARTA
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
@@ -276,8 +281,7 @@
                     }
                 }
 
-                // SEXTA
-                if (dayOfWeek === 5) {
+                if (dayOfWeek === 5) { // SEXTA
                     if (Math.ceil(monthDate / 7) === 2) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(end), ...cores['District Showdown'] });
