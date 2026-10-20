@@ -71,7 +71,6 @@
             var calendarEl = document.getElementById('calendar');
             
             var eventos = [];
-            // CORREÇÃO 1: Começar no dia 05 de Outubro para evitar o evento fantasma de Setembro
             var startDate = new Date('2026-10-05'); 
             var endDate = new Date('2027-12-31');   
             var cycleStart = new Date('2026-10-05'); 
@@ -86,7 +85,6 @@
                 'Alliance League': { backgroundColor: 'rgba(241, 196, 15, 0.85)', borderColor: 'rgba(241, 196, 15, 1)' },
                 'District Showdown': { backgroundColor: 'rgba(26, 188, 156, 0.85)', borderColor: 'rgba(26, 188, 156, 1)' },
                 'Archipelago Raid (AR)': { backgroundColor: 'rgba(142, 68, 173, 0.85)', borderColor: 'rgba(142, 68, 173, 1)' },
-                // CORREÇÃO 2: Adicionando a cor do Island Raid (Azul Escuro/Ciano)
                 'Island Raid (IR)': { backgroundColor: 'rgba(41, 128, 185, 0.85)', borderColor: 'rgba(41, 128, 185, 1)' },
                 'Extreme Showdown': { backgroundColor: 'rgba(149, 165, 166, 0.85)', borderColor: 'rgba(149, 165, 166, 1)' }
             };
@@ -109,7 +107,6 @@
 
                 let diffTime = Math.abs(d - cycleStart);
                 let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                // Correção matemática para garantir que a semana 1 seja sempre exata
                 let isWeek1 = (Math.round(diffDays / 7) % 2 === 0);
 
                 // --- SEGUNDA ---
@@ -147,12 +144,10 @@
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
-                    // AR (2ª Quarta do mês)
                     if (Math.ceil(monthDate / 7) === 2) {
                         let endAR = new Date(d); endAR.setDate(endAR.getDate() + 5);
                         eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
                     }
-                    // CORREÇÃO 2: Island Raid (4ª Quarta do mês)
                     else if (Math.ceil(monthDate / 7) === 4) {
                         let endIR = new Date(d); endIR.setDate(endIR.getDate() + 5);
                         eventos.push({ title: 'Island Raid (IR)', start: formatDate(d), end: formatDate(endIR), ...cores['Island Raid (IR)'] });
@@ -174,6 +169,7 @@
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                firstDay: 1, // <--- A MÁGICA ACONTECE AQUI! (1 = Segunda-feira)
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
