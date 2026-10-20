@@ -13,7 +13,7 @@
         body { 
             font-family: Arial, sans-serif; 
             margin: 20px; 
-            background-color: #111; /* Fundo escuro */
+            background-color: #111; 
             color: #e0e0e0; 
         }
         h1 { text-align: center; color: #e0e0e0; }
@@ -28,36 +28,31 @@
             color: #e0e0e0;
         }
 
-        /* Cabeçalho com fundo bem escuro (#101010) */
         .fc-theme-standard th {
             background-color: #101010 !important;
             border-color: #333;
         }
 
-        /* Barras dos eventos: Altura, Sombra e Formato */
         .fc-event { 
             padding: 4px 6px !important; 
             font-size: 0.85em; 
             border-radius: 4px; 
             font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.9); /* Sombra para o texto não sumir no fundo claro */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9); 
             border-width: 1px !important;
             cursor: pointer;
             margin-top: 1px;
         }
         
-        /* Linha divisória entre as semanas */
         .fc-daygrid-body tr { 
             border-bottom: 2px solid #333 !important; 
         }
 
-        /* Ajustes de texto para o modo escuro */
         .fc-col-header-cell-cushion, .fc-daygrid-day-number { color: #e0e0e0; }
         .fc-toolbar-title { color: #e0e0e0; }
         .fc-button-primary { background-color: #333; border-color: #444; }
         .fc-button-primary:hover { background-color: #ff9800; border-color: #ff9800; color: #111;}
         
-        /* Melhora o visual no celular */
         @media (max-width: 768px) {
             #calendar { padding: 10px; }
             .fc-event { font-size: 0.75em; padding: 2px 4px !important; }
@@ -69,22 +64,18 @@
     <h1>Doomsday: Last Survivors - Alliance Calendar</h1>
     <div id="calendar"></div>
 
-    <!-- FullCalendar Principal -->
     <script src='https://unpkg.com/fullcalendar@6.1.15/index.global.min.js'></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             
-            // =========================================================
-            // O MOTOR DE CÁLCULO DE DATAS E CORES
-            // =========================================================
             var eventos = [];
-            var startDate = new Date('2026-09-28'); 
+            // CORREÇÃO 1: Começar no dia 05 de Outubro para evitar o evento fantasma de Setembro
+            var startDate = new Date('2026-10-05'); 
             var endDate = new Date('2027-12-31');   
             var cycleStart = new Date('2026-10-05'); 
 
-            // Cores exatas (RGBA com transparência de 85% e bordas sólidas)
             var cores = {
                 'Water War': { backgroundColor: 'rgba(52, 152, 219, 0.85)', borderColor: 'rgba(52, 152, 219, 1)' },
                 'Anpede Hunt': { backgroundColor: 'rgba(231, 76, 60, 0.85)', borderColor: 'rgba(231, 76, 60, 1)' },
@@ -95,6 +86,8 @@
                 'Alliance League': { backgroundColor: 'rgba(241, 196, 15, 0.85)', borderColor: 'rgba(241, 196, 15, 1)' },
                 'District Showdown': { backgroundColor: 'rgba(26, 188, 156, 0.85)', borderColor: 'rgba(26, 188, 156, 1)' },
                 'Archipelago Raid (AR)': { backgroundColor: 'rgba(142, 68, 173, 0.85)', borderColor: 'rgba(142, 68, 173, 1)' },
+                // CORREÇÃO 2: Adicionando a cor do Island Raid (Azul Escuro/Ciano)
+                'Island Raid (IR)': { backgroundColor: 'rgba(41, 128, 185, 0.85)', borderColor: 'rgba(41, 128, 185, 1)' },
                 'Extreme Showdown': { backgroundColor: 'rgba(149, 165, 166, 0.85)', borderColor: 'rgba(149, 165, 166, 1)' }
             };
 
@@ -116,19 +109,17 @@
 
                 let diffTime = Math.abs(d - cycleStart);
                 let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                let isWeek1 = (Math.floor(diffDays / 7) % 2 === 0);
+                // Correção matemática para garantir que a semana 1 seja sempre exata
+                let isWeek1 = (Math.round(diffDays / 7) % 2 === 0);
 
                 // --- SEGUNDA ---
                 if (dayOfWeek === 1) {
-                    // Water War (Seg a Qua)
                     let end = new Date(d); end.setDate(end.getDate() + 3);
                     eventos.push({ title: 'Water War', start: formatDate(d), end: formatDate(end), ...cores['Water War'] });
                     
-                    // Anpede (Só Segunda)
                     let endA = new Date(d); endA.setDate(endA.getDate() + 1);
                     eventos.push({ title: 'Anpede Hunt', start: formatDate(d), end: formatDate(endA), ...cores['Anpede Hunt'] });
 
-                    // All-Star Night (A cada 14 dias, dura 1 semana inteira)
                     if (isWeek1) {
                         let endAS = new Date(d); endAS.setDate(endAS.getDate() + 7);
                         eventos.push({ title: 'All-Star Night', start: formatDate(d), end: formatDate(endAS), ...cores['All-Star Night'] });
@@ -138,16 +129,13 @@
                 // --- TERÇA ---
                 if (dayOfWeek === 2) {
                     if (isWeek1) {
-                        // Pompeii (Semana 1)
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'The Recovery Of Pompeii', start: formatDate(d), end: formatDate(end), ...cores['The Recovery Of Pompeii'] });
                     } else {
-                        // Off-Limits (Semana 2)
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'Off-Limits War', start: formatDate(d), end: formatDate(end), ...cores['Off-Limits War'] });
                     }
 
-                    // Alliance League (Última terça do mês)
                     if (d.getMonth() !== nextWeek.getMonth()) {
                         let end = new Date(d); end.setDate(end.getDate() + 6);
                         eventos.push({ title: 'Alliance League', start: formatDate(d), end: formatDate(end), ...cores['Alliance League'] });
@@ -156,7 +144,6 @@
 
                 // --- QUARTA ---
                 if (dayOfWeek === 3) {
-                    // Horde Defense
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
@@ -165,16 +152,19 @@
                         let endAR = new Date(d); endAR.setDate(endAR.getDate() + 5);
                         eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
                     }
+                    // CORREÇÃO 2: Island Raid (4ª Quarta do mês)
+                    else if (Math.ceil(monthDate / 7) === 4) {
+                        let endIR = new Date(d); endIR.setDate(endIR.getDate() + 5);
+                        eventos.push({ title: 'Island Raid (IR)', start: formatDate(d), end: formatDate(endIR), ...cores['Island Raid (IR)'] });
+                    }
                 }
 
                 // --- SEXTA ---
                 if (dayOfWeek === 5) {
-                    // District Showdown (2ª Sexta)
                     if (Math.ceil(monthDate / 7) === 2) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(end), ...cores['District Showdown'] });
                     }
-                    // Extreme Showdown (4ª Sexta)
                     else if (Math.ceil(monthDate / 7) === 4) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'Extreme Showdown', start: formatDate(d), end: formatDate(end), ...cores['Extreme Showdown'] });
@@ -182,9 +172,6 @@
                 }
             }
 
-            // =========================================================
-            // RENDERIZAÇÃO DO CALENDÁRIO
-            // =========================================================
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
@@ -194,9 +181,9 @@
                 },
                 events: eventos,
                 eventDisplay: 'block', 
-                dayMaxEvents: 4, // Aumentei um pouco para não esconder eventos tão cedo
+                dayMaxEvents: 4, 
                 height: 'auto',
-                eventTextColor: '#ffffff' // Força o texto a ser branco
+                eventTextColor: '#ffffff' 
             });
             calendar.render();
         });
