@@ -43,13 +43,26 @@
         .fc-button-primary { background-color: #333; border-color: #444; }
         .fc-button-primary:hover { background-color: #ff9800; border-color: #ff9800; color: #111;}
 
-        /* --- ANIMAÇÕES SEPARADAS --- */
-        
-        /* 1. Animação de Opacidade para o Fundo do Dia */
+        /* =========================================================
+           ANIMAÇÕES SEPARADAS E CORRIGIDAS
+           ========================================================= */
+
+        /* 1. Animação de Opacidade para o Fundo do Dia (Overlay) */
         @keyframes pulse-bg {
-            0% { background-color: rgba(255, 152, 0, 0.1); }
-            50% { background-color: rgba(255, 152, 0, 0.4); }
-            100% { background-color: rgba(255, 152, 0, 0.1); }
+            0% { background-color: rgba(255, 152, 0, 0.4); } /* 40% opacity */
+            50% { background-color: rgba(255, 152, 0, 0.75); } /* 75% opacity */
+            100% { background-color: rgba(255, 152, 0, 0.4); }
+        }
+
+        /* Aplica a animação de fundo APENAS na célula do dia */
+        .fc-day-today {
+            animation: pulse-bg 1s infinite ease-in-out !important;
+            border-radius: 8px;
+        }
+        
+        /* Garante que o frame interno não sobreponha o fundo animado */
+        .fc-day-today .fc-daygrid-day-frame {
+            background-color: transparent !important;
         }
 
         /* 2. Animação de Zoom para o Ícone */
@@ -59,35 +72,22 @@
             100% { transform: scale(0.95); }
         }
 
-        /* Aplica a animação de fundo APENAS na célula do dia (sem zoom) */
-        .fc-day-today {
-            animation: pulse-bg 1s infinite ease-in-out !important;
-            background-color: transparent !important; 
-            position: relative; 
-            border-radius: 8px;
-            overflow: visible !important; 
-        }
-        
-        .fc-day-today .fc-daygrid-day-frame {
-            background-color: transparent !important;
-        }
-
-        /* Estilo e animação do ícone */
-        .today-icon {
-            font-size: 20px;
-            color: #ff9800;
-            vertical-align: middle;
-            margin-right: 4px; /* Espaço entre o ícone e o número */
-            display: inline-block; /* Necessário para o transform funcionar */
-            animation: pulse-icon 1s infinite ease-in-out; /* Animação de zoom só aqui */
-        }
-
-        /* Força o container do topo a ser flex para alinhar o ícone e o número */
-        .fc-daygrid-day-top {
+        /* Alinhamento do topo da célula (Número + Ícone) */
+        .fc-day-today .fc-daygrid-day-top {
             display: flex;
-            flex-direction: row-reverse; /* Mantém o número na direita e o ícone à esquerda dele */
+            flex-direction: row !important; /* Força o alinhamento normal */
+            justify-content: flex-end !important; /* Empurra tudo para a direita */
             align-items: center;
-            justify-content: flex-start; /* Alinha o conteúdo à direita da célula */
+            padding-right: 4px;
+        }
+
+        /* Estilo do ícone */
+        .today-icon {
+            font-size: 18px;
+            color: #e0e0e0; /* Mesma cor do número da data */
+            margin-right: 4px; /* Espaço entre o ícone e o número */
+            display: inline-block;
+            animation: pulse-icon 1s infinite ease-in-out; /* Animação de zoom */
         }
         
         @media (max-width: 900px) {
@@ -363,7 +363,7 @@
                             icon.className = 'material-symbols-outlined today-icon';
                             icon.innerText = 'person';
                             
-                            // Insere o ícone antes do número
+                            // Insere o ícone ANTES do número
                             topEl.insertBefore(icon, numEl);
                         }
                     }
