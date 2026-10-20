@@ -59,6 +59,49 @@
             });
             calendar.render();
         });
+        <!-- Bibliotecas JavaScript (Versão 6) -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    
+    <!-- O plugin do iCalendar e o leitor (ical.js) -->
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/icalendar@6.1.15/index.global.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/dist/ical.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            
+            // Buscamos o arquivo .ics manualmente para evitar bloqueios do navegador
+            fetch('doomsday-calendar.ics')
+                .then(response => {
+                    if (!response.ok) throw new Error('Arquivo não encontrado');
+                    return response.text();
+                })
+                .then(data => {
+                    // Se conseguiu ler o arquivo, cria o calendário
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        locale: 'pt-br',
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,listWeek'
+                        },
+                        events: {
+                            // Entrega o texto do arquivo para o FullCalendar ler
+                            url: 'data:text/calendar;charset=utf8,' + encodeURIComponent(data),
+                            format: 'ics'
+                        },
+                        eventDisplay: 'block',
+                        dayMaxEvents: 3,
+                        height: 'auto'
+                    });
+                    calendar.render();
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar o calendário:', error);
+                    calendarEl.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar os eventos. Verifique se o arquivo .ics está no repositório.</p>';
+                });
+        });
     </script>
 </body>
 </html>
