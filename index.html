@@ -14,18 +14,24 @@
             font-family: Arial, sans-serif; 
             margin: 20px; 
             background-color: #111; /* Fundo escuro */
-            color: #e0e0e0; /* Texto cinza claro */
+            color: #e0e0e0; 
         }
         h1 { text-align: center; color: #e0e0e0; }
         
         #calendar { 
             max-width: 1100px; 
             margin: 0 auto; 
-            background: #1e1e1e; /* Fundo do calendário um pouco mais claro que o body */
+            background: #1e1e1e; 
             padding: 20px; 
             border-radius: 8px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.5); 
             color: #e0e0e0;
+        }
+
+        /* CORREÇÃO DO CABEÇALHO: Fundo bem escuro */
+        .fc-theme-standard th {
+            background-color: #101010 !important;
+            border-color: #333;
         }
 
         /* Deixa as barras dos eventos mais grossas e com cor de destaque (Laranja) */
@@ -35,17 +41,16 @@
             border: none; 
             border-radius: 4px; 
             background-color: #ff9800; /* Laranja claro */
-            color: #111; /* Texto escuro dentro da barra laranja para dar contraste */
+            color: #111; /* Texto escuro dentro da barra laranja */
             font-weight: bold;
         }
         
-        /* Deixa a linha divisória entre as semanas mais visível no modo escuro */
+        /* Deixa a linha divisória entre as semanas mais visível */
         .fc-daygrid-body tr { 
             border-bottom: 2px solid #333 !important; 
         }
 
-        /* Ajustes para o FullCalendar no modo escuro */
-        .fc-theme-standard td, .fc-theme-standard th { border-color: #333; }
+        /* Ajustes de texto para o modo escuro */
         .fc-col-header-cell-cushion, .fc-daygrid-day-number { color: #e0e0e0; }
         .fc-toolbar-title { color: #e0e0e0; }
         .fc-button-primary { background-color: #333; border-color: #444; }
@@ -65,8 +70,12 @@
 
     <!-- Bibliotecas JavaScript (Versão 6) -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
-    <!-- O plugin do iCalendar para a versão 6 -->
+    
+    <!-- O plugin do iCalendar PARA A VERSÃO 6 -->
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/icalendar@6.1.15/index.global.min.js'></script>
+    
+    <!-- A BIBLIOTECA ICAL.JS (Agora com link corrigido e seguro) -->
+    <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/dist/ical.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -79,17 +88,15 @@
                     return response.text();
                 })
                 .then(data => {
-                    // Se conseguiu ler o arquivo, cria o calendário
                     var calendar = new FullCalendar.Calendar(calendarEl, {
                         initialView: 'dayGridMonth',
-                        locale: 'pt-br',
+                        // locale: 'pt-br', <-- REMOVIDO PARA FICAR EM INGLÊS
                         headerToolbar: {
                             left: 'prev,next today',
                             center: 'title',
                             right: 'dayGridMonth,listWeek'
                         },
                         events: {
-                            // O FullCalendar lê o texto do arquivo nativamente agora
                             url: 'data:text/calendar;charset=utf8,' + encodeURIComponent(data),
                             format: 'ics'
                         },
@@ -101,7 +108,7 @@
                 })
                 .catch(error => {
                     console.error('Erro ao carregar o calendário:', error);
-                    calendarEl.innerHTML = '<p style="text-align:center; color:#ff9800;">Erro ao carregar os eventos. Verifique se o arquivo .ics está no repositório.</p>';
+                    calendarEl.innerHTML = '<p style="text-align:center; color:#ff9800;">Error loading events. Check if the .ics file is in the repository.</p>';
                 });
         });
     </script>
