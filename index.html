@@ -5,49 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doomsday: Last Survivors - Alliance Calendar</title>
 
-    <!-- Estilos do FullCalendar -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.3/skeleton.css" rel="stylesheet" />
+    <!-- Estilos do FullCalendar (Versão 6) -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
     
-    <!-- CSS Customizado para deixar as barras maiores e as semanas mais distintas -->
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        #calendar {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        h1 { text-align: center; color: #333; }
+        #calendar { max-width: 1100px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        
         /* --- CUSTOMIZAÇÃO PEDIDA PELA ALIANÇA --- */
         /* Deixa as barras dos eventos mais grossas */
-        .fc-event {
-            padding: 6px 4px !important; 
-            font-size: 0.9em;
-            border: none;
-            border-radius: 4px;
-        }
+        .fc-event { padding: 6px 4px !important; font-size: 0.9em; border: none; border-radius: 4px; }
         /* Deixa a linha divisória entre as semanas mais visível */
-        .fc-daygrid-body tr {
-            border-bottom: 2px solid #e0e0e0 !important;
-        }
+        .fc-daygrid-body tr { border-bottom: 2px solid #e0e0e0 !important; }
+        
         /* Melhora o visual no celular */
         @media (max-width: 768px) {
-            #calendar {
-                padding: 10px;
-            }
-            .fc-event {
-                font-size: 0.75em;
-                padding: 4px 2px !important;
-            }
+            #calendar { padding: 10px; }
+            .fc-event { font-size: 0.75em; padding: 4px 2px !important; }
         }
     </style>
 </head>
@@ -56,29 +31,30 @@
     <h1>Doomsday: Last Survivors - Alliance Calendar</h1>
     <div id="calendar"></div>
 
-    <!-- Bibliotecas JavaScript do FullCalendar e do leitor de .ics -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.1.3/index.global.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ical.js@2.2.1/dist/ical.es5.min.cjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/icalendar@7.1.2/global.js"></script>
+    <!-- Bibliotecas JavaScript (Versão 6 - Tudo em um único arquivo) -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    
+    <!-- O plugin do iCalendar para a versão 6 -->
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/icalendar@6.1.15/index.global.min.js'></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth', // Visão de mês
-                locale: 'pt-br', // Tenta usar português, mas o navegador traduz
+                initialView: 'dayGridMonth',
+                locale: 'pt-br',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,listWeek' // Botão para ver em lista (bom para mobile)
+                    right: 'dayGridMonth,listWeek'
                 },
                 // Aqui ele lê o SEU arquivo .ics
                 events: {
                     url: 'doomsday-calendar.ics', 
                     format: 'ics'
                 },
-                eventDisplay: 'block', // Garante que as barras fiquem sólidas
-                dayMaxEvents: 3, // Se tiver muitos eventos no dia, mostra "+ mais"
+                eventDisplay: 'block',
+                dayMaxEvents: 3,
                 height: 'auto'
             });
             calendar.render();
