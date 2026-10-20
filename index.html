@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doomsday: Last Survivors - Alliance Calendar</title>
 
-    <!-- Estilos do FullCalendar (Versão 6) - Usando unpkg agora -->
+    <!-- Estilos do FullCalendar (Usando CDN confiável) -->
     <link href='https://unpkg.com/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
     
     <style>
@@ -13,7 +13,7 @@
         body { 
             font-family: Arial, sans-serif; 
             margin: 20px; 
-            background-color: #111; 
+            background-color: #111; /* Fundo escuro */
             color: #e0e0e0; 
         }
         h1 { text-align: center; color: #e0e0e0; }
@@ -28,21 +28,21 @@
             color: #e0e0e0;
         }
 
-        /* Cabeçalho com fundo bem escuro */
+        /* Cabeçalho com fundo bem escuro (#101010) */
         .fc-theme-standard th {
             background-color: #101010 !important;
             border-color: #333;
         }
 
-        /* Eventos suaves e transparentes */
+        /* Barras dos eventos */
         .fc-event { 
-            padding: 5px 4px !important; 
+            padding: 4px 4px !important; 
             font-size: 0.85em; 
-            border-radius: 4px; 
+            border-radius: 3px; 
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.9); 
             border-width: 1px !important;
             cursor: pointer;
+            margin-bottom: 2px;
         }
         
         /* Linha divisória entre as semanas */
@@ -59,7 +59,7 @@
         /* Melhora o visual no celular */
         @media (max-width: 768px) {
             #calendar { padding: 10px; }
-            .fc-event { font-size: 0.75em; padding: 4px 2px !important; }
+            .fc-event { font-size: 0.75em; padding: 2px !important; }
         }
     </style>
 </head>
@@ -68,55 +68,124 @@
     <h1>Doomsday: Last Survivors - Alliance Calendar</h1>
     <div id="calendar"></div>
 
-    <!-- FullCalendar Principal (unpkg) -->
+    <!-- FullCalendar Principal -->
     <script src='https://unpkg.com/fullcalendar@6.1.15/index.global.min.js'></script>
-    
-    <!-- A biblioteca rrule base (necessária para a repetição) -->
-    <script src='https://unpkg.com/rrule@2.7.2/dist/es5/rrule.min.js'></script>
-    
-    <!-- O Plugin do FullCalendar que conecta a rrule (unpkg) -->
-    <script src='https://unpkg.com/@fullcalendar/rrule@6.1.15/index.global.min.js'></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             
-            // --- EVENTOS COM REGRAS DE REPETIÇÃO (RRULE) ---
-            var eventosFixos = [
-                // --- SEMANAIS ---
-                // Water War: Toda segunda. O 'end' na quinta faz ele durar até quarta.
-                { title: 'Water War', start: '2026-10-05', end: '2026-10-08', rrule: 'FREQ=WEEKLY;BYDAY=MO', backgroundColor: 'rgba(52, 152, 219, 0.7)', borderColor: 'rgba(52, 152, 219, 1)' },
-                
-                // Anpede Hunt: Toda segunda.
-                { title: 'Anpede Hunt', start: '2026-10-05', end: '2026-10-06', rrule: 'FREQ=WEEKLY;BYDAY=MO', backgroundColor: 'rgba(231, 76, 60, 0.7)', borderColor: 'rgba(231, 76, 60, 1)' },
-                
-                // Horde Defense: Toda quarta.
-                { title: 'Horde Defense', start: '2026-10-07', end: '2026-10-08', rrule: 'FREQ=WEEKLY;BYDAY=WE', backgroundColor: 'rgba(230, 126, 34, 0.7)', borderColor: 'rgba(230, 126, 34, 1)' },
+            // =========================================================
+            // O "ROBÔ" QUE CALCULA AS DATAS (SEM PRECISAR DE RRULE)
+            // Ele vai gerar os eventos exatamente como no seu Google.
+            // =========================================================
+            var eventos = [];
+            var startDate = new Date('2026-09-28'); // Uma segunda-feira para começar
+            var endDate = new Date('2027-12-31');   // Vai gerar até o fim de 2027
+            var cycleStart = new Date('2026-10-05'); // Semana 1 do ciclo de 14 dias
 
-                // --- QUINZENAIS (INTERVAL=2) ---
-                // Pompeii: A cada 14 dias, na terça. Começa dia 06/10.
-                { title: 'The Recovery Of Pompeii', start: '2026-10-06', end: '2026-10-07', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU', backgroundColor: 'rgba(155, 89, 182, 0.7)', borderColor: 'rgba(155, 89, 182, 1)' },
-                
-                // Off-Limits: A cada 14 dias, na terça. Começa dia 13/10 (na semana que não tem Pompeii).
-                { title: 'Off-Limits War', start: '2026-10-13', end: '2026-10-14', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU', backgroundColor: 'rgba(46, 204, 113, 0.7)', borderColor: 'rgba(46, 204, 113, 1)' },
-                
-                // All-Star Night: A cada 14 dias, na segunda (barra longa de 1 semana).
-                { title: 'All-Star Night', start: '2026-10-05', end: '2026-10-12', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=MO', backgroundColor: 'rgba(233, 30, 99, 0.7)', borderColor: 'rgba(233, 30, 99, 1)' },
+            // Cores idênticas ao seu print (RGBA com 85% de opacidade)
+            var cores = {
+                'Water War': { bg: 'rgba(52, 152, 219, 0.85)', border: 'rgba(52, 152, 219, 1)' },
+                'Anpede Hunt': { bg: 'rgba(231, 76, 60, 0.85)', border: 'rgba(231, 76, 60, 1)' },
+                'Horde Defense': { bg: 'rgba(230, 126, 34, 0.85)', border: 'rgba(230, 126, 34, 1)' },
+                'Off-Limits War': { bg: 'rgba(46, 204, 113, 0.85)', border: 'rgba(46, 204, 113, 1)' },
+                'The Recovery Of Pompeii': { bg: 'rgba(155, 89, 182, 0.85)', border: 'rgba(155, 89, 182, 1)' },
+                'All-Star Night': { bg: 'rgba(233, 30, 99, 0.85)', border: 'rgba(233, 30, 99, 1)' },
+                'Alliance League': { bg: 'rgba(241, 196, 15, 0.85)', border: 'rgba(241, 196, 15, 1)' },
+                'District Showdown': { bg: 'rgba(26, 188, 156, 0.85)', border: 'rgba(26, 188, 156, 1)' },
+                'Archipelago Raid (AR)': { bg: 'rgba(142, 68, 173, 0.85)', border: 'rgba(142, 68, 173, 1)' },
+                'Extreme Showdown': { bg: 'rgba(149, 165, 166, 0.85)', border: 'rgba(149, 165, 166, 1)' }
+            };
 
-                // --- MENSAIS ---
-                // Alliance League: Última terça-feira do mês.
-                { title: 'Alliance League', start: '2026-10-27', end: '2026-11-02', rrule: 'FREQ=MONTHLY;BYDAY=-1TU', backgroundColor: 'rgba(241, 196, 15, 0.7)', borderColor: 'rgba(241, 196, 15, 1)' },
-                
-                // Archipelago Raid: Segunda quarta-feira do mês.
-                { title: 'Archipelago Raid (AR)', start: '2026-10-14', end: '2026-10-19', rrule: 'FREQ=MONTHLY;BYDAY=2WE', backgroundColor: 'rgba(142, 68, 173, 0.7)', borderColor: 'rgba(142, 68, 173, 1)' },
-                
-                // District Showdown: Segunda sexta-feira do mês.
-                { title: 'District Showdown', start: '2026-10-09', end: '2026-10-12', rrule: 'FREQ=MONTHLY;BYDAY=2FR', backgroundColor: 'rgba(26, 188, 156, 0.7)', borderColor: 'rgba(26, 188, 156, 1)' },
-                
-                // Extreme Showdown: Quarta sexta-feira do mês.
-                { title: 'Extreme Showdown', start: '2026-10-23', end: '2026-10-26', rrule: 'FREQ=MONTHLY;BYDAY=4FR', backgroundColor: 'rgba(149, 165, 166, 0.7)', borderColor: 'rgba(149, 165, 166, 1)' }
-            ];
+            var formatDate = (date) => {
+                let d = new Date(date);
+                let month = '' + (d.getMonth() + 1);
+                let day = '' + d.getDate();
+                let year = d.getFullYear();
+                if (month.length < 2) month = '0' + month;
+                if (day.length < 2) day = '0' + day;
+                return [year, month, day].join('-');
+            };
 
+            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                let dayOfWeek = d.getDay(); // 0=Dom, 1=Seg, 2=Ter...
+                let monthDate = d.getDate();
+                let nextWeek = new Date(d);
+                nextWeek.setDate(nextWeek.getDate() + 7);
+
+                // Verifica se estamos na Semana 1 ou 2 do ciclo de 14 dias
+                let diffTime = Math.abs(d - cycleStart);
+                let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                let isWeek1 = (Math.floor(diffDays / 7) % 2 === 0);
+
+                // --- TODA SEGUNDA ---
+                if (dayOfWeek === 1) {
+                    // Water War (Seg a Qua)
+                    let end = new Date(d); end.setDate(end.getDate() + 3);
+                    eventos.push({ title: 'Water War', start: formatDate(d), end: formatDate(end), ...cores['Water War'] });
+                    
+                    // Anpede (Só Segunda)
+                    let endA = new Date(d); endA.setDate(endA.getDate() + 1);
+                    eventos.push({ title: 'Anpede Hunt', start: formatDate(d), end: formatDate(endA), ...cores['Anpede Hunt'] });
+
+                    // All-Star Night (A cada 14 dias, dura 1 semana inteira)
+                    if (isWeek1) {
+                        let endAS = new Date(d); endAS.setDate(endAS.getDate() + 7);
+                        eventos.push({ title: 'All-Star Night', start: formatDate(d), end: formatDate(endAS), ...cores['All-Star Night'] });
+                    }
+                }
+
+                // --- TODA TERÇA ---
+                if (dayOfWeek === 2) {
+                    // Pompeii (Semana 1)
+                    if (isWeek1) {
+                        let end = new Date(d); end.setDate(end.getDate() + 1);
+                        eventos.push({ title: 'The Recovery Of Pompeii', start: formatDate(d), end: formatDate(end), ...cores['The Recovery Of Pompeii'] });
+                    } else {
+                        // Off-Limits (Semana 2)
+                        let end = new Date(d); end.setDate(end.getDate() + 1);
+                        eventos.push({ title: 'Off-Limits War', start: formatDate(d), end: formatDate(end), ...cores['Off-Limits War'] });
+                    }
+
+                    // Alliance League (Última terça do mês, dura 1 semana)
+                    if (d.getMonth() !== nextWeek.getMonth()) {
+                        let end = new Date(d); end.setDate(end.getDate() + 6);
+                        eventos.push({ title: 'Alliance League', start: formatDate(d), end: formatDate(end), ...cores['Alliance League'] });
+                    }
+                }
+
+                // --- TODA QUARTA ---
+                if (dayOfWeek === 3) {
+                    // Horde Defense (Só Quarta)
+                    let end = new Date(d); end.setDate(end.getDate() + 1);
+                    eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
+
+                    // AR (2ª Quarta do mês, dura até Domingo)
+                    if (Math.ceil(monthDate / 7) === 2) {
+                        let endAR = new Date(d); endAR.setDate(endAR.getDate() + 5);
+                        eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
+                    }
+                }
+
+                // --- TODA SEXTA ---
+                if (dayOfWeek === 5) {
+                    // District Showdown (2ª Sexta, dura até Domingo)
+                    if (Math.ceil(monthDate / 7) === 2) {
+                        let end = new Date(d); end.setDate(end.getDate() + 3);
+                        eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(end), ...cores['District Showdown'] });
+                    }
+                    // Extreme Showdown (4ª Sexta, dura até Domingo)
+                    else if (Math.ceil(monthDate / 7) === 4) {
+                        let end = new Date(d); end.setDate(end.getDate() + 3);
+                        eventos.push({ title: 'Extreme Showdown', start: formatDate(d), end: formatDate(end), ...cores['Extreme Showdown'] });
+                    }
+                }
+            }
+
+            // =========================================================
+            // INICIA O CALENDÁRIO COM OS EVENTOS GERADOS
+            // =========================================================
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
@@ -124,8 +193,8 @@
                     center: 'title',
                     right: 'dayGridMonth,listWeek'
                 },
-                events: eventosFixos,
-                eventDisplay: 'block',
+                events: eventos,
+                eventDisplay: 'block', // Garante que as barras fiquem contínuas e sólidas
                 dayMaxEvents: 3,
                 height: 'auto',
                 eventTextColor: '#ffffff'
