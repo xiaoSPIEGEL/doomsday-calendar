@@ -13,7 +13,7 @@
         body { 
             font-family: Arial, sans-serif; 
             margin: 20px; 
-            background-color: #111; /* Fundo escuro */
+            background-color: #111; 
             color: #e0e0e0; 
         }
         h1 { text-align: center; color: #e0e0e0; }
@@ -28,22 +28,21 @@
             color: #e0e0e0;
         }
 
-        /* Cabeçalho com fundo bem escuro (#101010) */
+        /* Cabeçalho com fundo bem escuro */
         .fc-theme-standard th {
             background-color: #101010 !important;
             border-color: #333;
         }
 
-        /* --- ESTILO DOS EVENTOS (SUAVES E TRANSPARENTES) --- */
+        /* Eventos suaves e transparentes */
         .fc-event { 
             padding: 5px 4px !important; 
             font-size: 0.85em; 
             border-radius: 4px; 
             font-weight: bold;
-            /* Sombra no texto para garantir leitura em qualquer cor */
             text-shadow: 1px 1px 2px rgba(0,0,0,0.9); 
-            /* Borda sutil para separar os eventos quando estão no mesmo dia */
             border-width: 1px !important;
+            cursor: pointer;
         }
         
         /* Linha divisória entre as semanas */
@@ -69,39 +68,50 @@
     <h1>Doomsday: Last Survivors - Alliance Calendar</h1>
     <div id="calendar"></div>
 
+    <!-- FullCalendar Principal -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    
+    <!-- O PLUGIN MÁGICO QUE FAZ A REPETIÇÃO FUNCIONAR -->
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/rrule@6.1.15/index.global.min.js'></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             
-            // --- EVENTOS COM CORES INDIVIDUAIS E TRANSPARÊNCIA (ALPHA) ---
-            // O último número (0.7) é a opacidade. 0 = invisível, 1 = sólido.
+            // --- EVENTOS COM REGRAS DE REPETIÇÃO (RRULE) ---
             var eventosFixos = [
-                // Azul Suave (Water War)
-                { title: 'Water War', start: '2026-09-28', end: '2026-10-01', rrule: 'FREQ=WEEKLY;BYDAY=MO', backgroundColor: 'rgba(52, 152, 219, 0.7)', borderColor: 'rgba(52, 152, 219, 1)' },
-                // Laranja/Vermelho Suave (Anpede Hunt)
-                { title: 'Anpede Hunt', start: '2026-09-28', end: '2026-09-29', rrule: 'FREQ=WEEKLY;BYDAY=MO', backgroundColor: 'rgba(231, 76, 60, 0.7)', borderColor: 'rgba(231, 76, 60, 1)' },
-                // Verde Limão Suave (Off-Limits War)
-                { title: 'Off-Limits War', start: '2026-09-29', end: '2026-09-30', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU', backgroundColor: 'rgba(46, 204, 113, 0.7)', borderColor: 'rgba(46, 204, 113, 1)' },
-                // Laranja Queimado (Horde Defense)
-                { title: 'Horde Defense', start: '2026-09-30', end: '2026-10-01', rrule: 'FREQ=WEEKLY;BYDAY=WE', backgroundColor: 'rgba(230, 126, 34, 0.7)', borderColor: 'rgba(230, 126, 34, 1)' },
-                // Roxo Suave (Pompeii)
+                // --- SEMANAIS ---
+                // Water War: Toda segunda. O 'end' na quinta faz ele durar até quarta.
+                { title: 'Water War', start: '2026-10-05', end: '2026-10-08', rrule: 'FREQ=WEEKLY;BYDAY=MO', backgroundColor: 'rgba(52, 152, 219, 0.7)', borderColor: 'rgba(52, 152, 219, 1)' },
+                
+                // Anpede Hunt: Toda segunda.
+                { title: 'Anpede Hunt', start: '2026-10-05', end: '2026-10-06', rrule: 'FREQ=WEEKLY;BYDAY=MO', backgroundColor: 'rgba(231, 76, 60, 0.7)', borderColor: 'rgba(231, 76, 60, 1)' },
+                
+                // Horde Defense: Toda quarta.
+                { title: 'Horde Defense', start: '2026-10-07', end: '2026-10-08', rrule: 'FREQ=WEEKLY;BYDAY=WE', backgroundColor: 'rgba(230, 126, 34, 0.7)', borderColor: 'rgba(230, 126, 34, 1)' },
+
+                // --- QUINZENAIS (INTERVAL=2) ---
+                // Pompeii: A cada 14 dias, na terça. Começa dia 06/10.
                 { title: 'The Recovery Of Pompeii', start: '2026-10-06', end: '2026-10-07', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU', backgroundColor: 'rgba(155, 89, 182, 0.7)', borderColor: 'rgba(155, 89, 182, 1)' },
-                // Rosa/Vermelho (All-Star Night)
+                
+                // Off-Limits: A cada 14 dias, na terça. Começa dia 13/10 (na semana que não tem Pompeii).
+                { title: 'Off-Limits War', start: '2026-10-13', end: '2026-10-14', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU', backgroundColor: 'rgba(46, 204, 113, 0.7)', borderColor: 'rgba(46, 204, 113, 1)' },
+                
+                // All-Star Night: A cada 14 dias, na segunda (barra longa de 1 semana).
                 { title: 'All-Star Night', start: '2026-10-05', end: '2026-10-12', rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=MO', backgroundColor: 'rgba(233, 30, 99, 0.7)', borderColor: 'rgba(233, 30, 99, 1)' },
+
+                // --- MENSAIS ---
+                // Alliance League: Última terça-feira do mês.
+                { title: 'Alliance League', start: '2026-10-27', end: '2026-11-02', rrule: 'FREQ=MONTHLY;BYDAY=-1TU', backgroundColor: 'rgba(241, 196, 15, 0.7)', borderColor: 'rgba(241, 196, 15, 1)' },
                 
-                // Amarelo/Dourado (Alliance League)
-                { title: 'Alliance League', start: '2026-09-29', end: '2026-10-05', rrule: 'FREQ=MONTHLY;BYDAY=-1TU', backgroundColor: 'rgba(241, 196, 15, 0.7)', borderColor: 'rgba(241, 196, 15, 1)' },
-                // Verde Água (District Showdown)
-                { title: 'District Showdown', start: '2026-10-09', end: '2026-10-12', rrule: 'FREQ=MONTHLY;BYDAY=2FR', backgroundColor: 'rgba(26, 188, 156, 0.7)', borderColor: 'rgba(26, 188, 156, 1)' },
-                // Azul Escuro/Roxo (Archipelago Raid)
+                // Archipelago Raid: Segunda quarta-feira do mês.
                 { title: 'Archipelago Raid (AR)', start: '2026-10-14', end: '2026-10-19', rrule: 'FREQ=MONTHLY;BYDAY=2WE', backgroundColor: 'rgba(142, 68, 173, 0.7)', borderColor: 'rgba(142, 68, 173, 1)' },
-                // Marrom/Cinza (Extreme Showdown)
-                { title: 'Extreme Showdown', start: '2026-10-23', end: '2026-10-26', rrule: 'FREQ=MONTHLY;BYDAY=4FR', backgroundColor: 'rgba(149, 165, 166, 0.7)', borderColor: 'rgba(149, 165, 166, 1)' },
                 
-                // Repetição do All-Star Night (Top Commander)
-                { title: 'All-Star Night (Top Commander)', start: '2026-09-21', end: '2026-09-27', rrule: 'FREQ=WEEKLY;UNTIL=20261004;INTERVAL=2;BYDAY=MO', backgroundColor: 'rgba(233, 30, 99, 0.7)', borderColor: 'rgba(233, 30, 99, 1)' }
+                // District Showdown: Segunda sexta-feira do mês.
+                { title: 'District Showdown', start: '2026-10-09', end: '2026-10-12', rrule: 'FREQ=MONTHLY;BYDAY=2FR', backgroundColor: 'rgba(26, 188, 156, 0.7)', borderColor: 'rgba(26, 188, 156, 1)' },
+                
+                // Extreme Showdown: Quarta sexta-feira do mês.
+                { title: 'Extreme Showdown', start: '2026-10-23', end: '2026-10-26', rrule: 'FREQ=MONTHLY;BYDAY=4FR', backgroundColor: 'rgba(149, 165, 166, 0.7)', borderColor: 'rgba(149, 165, 166, 1)' }
             ];
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -115,7 +125,7 @@
                 eventDisplay: 'block',
                 dayMaxEvents: 3,
                 height: 'auto',
-                eventTextColor: '#ffffff' // Força o texto a ser branco para contrastar com o fundo escuro
+                eventTextColor: '#ffffff'
             });
             calendar.render();
         });
