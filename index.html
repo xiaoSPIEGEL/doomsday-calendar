@@ -25,19 +25,7 @@
         #game-clock { display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 1.5em; color: #e0e0e0; margin-bottom: 25px; padding: 15px; border-radius: 8px; border: 1px solid #333; background-color: #111; font-family: 'Share Tech Mono', monospace; }
         #game-clock .material-symbols-outlined { font-size: 1.2em; color: #e0e0e0; }
 
-        /* Botão de Ativar Notificações */
-        #enable-notifications {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            background-color: #ff9800;
-            color: #111;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        #enable-notifications { width: 100%; padding: 10px; margin-bottom: 15px; background-color: #ff9800; color: #111; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         #enable-notifications:hover { background-color: #e68a00; }
         #enable-notifications:disabled { background-color: #333; color: #666; cursor: not-allowed; }
 
@@ -80,17 +68,16 @@
             
             <h3 style="color: #e0e0e0; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px;">Notify Me</h3>
             
-            <!-- Botão que pede permissão ao navegador -->
             <button id="enable-notifications">Enable Browser Notifications</button>
 
             <div class="checkbox-list" id="event-checkboxes">
-                <!-- Os checkboxes agora têm o atributo 'data-event' para facilitar a leitura no JS -->
                 <label class="checkbox-item"><input type="checkbox" data-event="Water War"> Water War</label>
                 <label class="checkbox-item"><input type="checkbox" data-event="Anpede Hunt"> Anpede Hunt</label>
                 <label class="checkbox-item"><input type="checkbox" data-event="Horde Defense"> Horde Defense</label>
                 <label class="checkbox-item"><input type="checkbox" data-event="The Recovery Of Pompeii"> The Recovery Of Pompeii</label>
                 <label class="checkbox-item"><input type="checkbox" data-event="Off-Limits War"> Off-Limits War</label>
                 <label class="checkbox-item"><input type="checkbox" data-event="All-Star Night"> All-Star Night</label>
+                <label class="checkbox-item"><input type="checkbox" data-event="Wasteland Exploration"> Wasteland Exploration</label> <!-- Novo Evento -->
                 <label class="checkbox-item"><input type="checkbox" data-event="Alliance League"> Alliance League</label>
                 <label class="checkbox-item"><input type="checkbox" data-event="Archipelago Raid (AR)"> Archipelago Raid</label>
                 <label class="checkbox-item"><input type="checkbox" data-event="Island Raid (IR)"> Island Raid</label>
@@ -115,10 +102,8 @@
         updateClock();
 
         // =========================================================
-        // NOVO: SISTEMA DE NOTIFICAÇÕES (CHECKBOXES E PERMISSÃO)
+        // SISTEMA DE NOTIFICAÇÕES
         // =========================================================
-        
-        // 1. Verifica se o navegador suporta notificações
         const btnEnable = document.getElementById('enable-notifications');
         
         if (!("Notification" in window)) {
@@ -127,39 +112,77 @@
         } else if (Notification.permission === "granted") {
             btnEnable.innerText = "Notifications Enabled ✓";
             btnEnable.disabled = true;
-            btnEnable.style.backgroundColor = "#4CAF50"; // Verde
+            btnEnable.style.backgroundColor = "#4CAF50";
         } else if (Notification.permission === "denied") {
             btnEnable.innerText = "Notifications Blocked in Browser";
             btnEnable.disabled = true;
-            btnEnable.style.backgroundColor = "#f44336"; // Vermelho
+            btnEnable.style.backgroundColor = "#f44336";
         }
 
-        // 2. Ação do Botão de Permissão
         btnEnable.addEventListener('click', function() {
             Notification.requestPermission().then(function(permission) {
                 if (permission === "granted") {
                     btnEnable.innerText = "Notifications Enabled ✓";
                     btnEnable.disabled = true;
                     btnEnable.style.backgroundColor = "#4CAF50";
-                    new Notification("Success!", { body: "You will now receive alerts for your selected events." });
+                    new Notification("Success!", { body: "You will now receive alerts at 23:45 UTC for selected events." });
                 }
             });
         });
 
-        // 3. Salvar e Carregar Checkboxes no localStorage
         const checkboxes = document.querySelectorAll('#event-checkboxes input[type="checkbox"]');
-        
-        // Carrega o estado salvo ao abrir a página
         checkboxes.forEach(cb => {
             const eventName = cb.getAttribute('data-event');
-            const isChecked = localStorage.getItem('notify_' + eventName) === 'true';
-            cb.checked = isChecked;
-
-            // Adiciona o evento de "mudança" para salvar quando o usuário clicar
+            cb.checked = localStorage.getItem('notify_' + eventName) === 'true';
             cb.addEventListener('change', function() {
                 localStorage.setItem('notify_' + eventName, this.checked);
             });
         });
+
+        // =========================================================
+        // O VIGIA (ALARME DE 23:45 UTC)
+        // =========================================================
+        function scheduleAlarm() {
+            if (Notification.permission !== "granted") return;
+
+            const now = new Date();
+            // Define o alvo para 23:45 UTC de HOJE
+            const target = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 45, 0));
+            
+            let msUntilTarget = target.getTime() - now.getTime();
+
+            // Se já passou das 23:45 de hoje, não agenda para hoje (evita spam)
+            if (msUntilTarget < 0) {
+                console.log("Past 23:45 UTC. Timer will schedule tomorrow on page reload.");
+                return;
+            }
+
+            console.log(`Alarm scheduled for 23:45 UTC (in ${Math.round(msUntilTarget / 1000 / 60)} minutes).`);
+
+            setTimeout(() => {
+                triggerNotifications();
+            }, msUntilTarget);
+        }
+
+        function triggerNotifications() {
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0]; // Pega a data de hoje em UTC (YYYY-MM-DD)
+
+            // Filtra os eventos globais para achar os que estão acontecendo HOJE
+            const eventsToday = window.eventosGlobais.filter(ev => {
+                return todayStr >= ev.start && todayStr < ev.end;
+            });
+
+            eventsToday.forEach(ev => {
+                const isChecked = localStorage.getItem('notify_' + ev.title) === 'true';
+                if (isChecked) {
+                    new Notification(`Event Alert: ${ev.title}`, {
+                        body: `15 minutes until reset! Get ready for ${ev.title}.`,
+                        icon: 'https://cdn-icons-png.flaticon.com/512/2903/2903722.png'
+                    });
+                }
+            });
+        }
 
 
         // =========================================================
@@ -180,6 +203,7 @@
                 'Off-Limits War': { backgroundColor: 'rgba(46, 204, 113, 0.85)', borderColor: 'rgba(46, 204, 113, 1)' },
                 'The Recovery Of Pompeii': { backgroundColor: 'rgba(155, 89, 182, 0.85)', borderColor: 'rgba(155, 89, 182, 1)' },
                 'All-Star Night': { backgroundColor: 'rgba(233, 30, 99, 0.85)', borderColor: 'rgba(233, 30, 99, 1)' },
+                'Wasteland Exploration': { backgroundColor: 'rgba(255, 193, 7, 0.85)', borderColor: 'rgba(255, 193, 7, 1)' }, // Amarelo/Dourado
                 'Alliance League': { backgroundColor: 'rgba(241, 196, 15, 0.85)', borderColor: 'rgba(241, 196, 15, 1)' },
                 'District Showdown': { backgroundColor: 'rgba(26, 188, 156, 0.85)', borderColor: 'rgba(26, 188, 156, 1)' },
                 'Archipelago Raid (AR)': { backgroundColor: 'rgba(142, 68, 173, 0.85)', borderColor: 'rgba(142, 68, 173, 1)' },
@@ -207,7 +231,8 @@
                 let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 let isWeek1 = (Math.round(diffDays / 7) % 2 === 0);
 
-                if (dayOfWeek === 1) { // SEGUNDA
+                // SEGUNDA
+                if (dayOfWeek === 1) {
                     let end = new Date(d); end.setDate(end.getDate() + 3);
                     eventos.push({ title: 'Water War', start: formatDate(d), end: formatDate(end), ...cores['Water War'] });
                     
@@ -220,7 +245,8 @@
                     }
                 }
 
-                if (dayOfWeek === 2) { // TERÇA
+                // TERÇA
+                if (dayOfWeek === 2) {
                     if (isWeek1) {
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'The Recovery Of Pompeii', start: formatDate(d), end: formatDate(end), ...cores['The Recovery Of Pompeii'] });
@@ -235,7 +261,17 @@
                     }
                 }
 
-                if (dayOfWeek === 3) { // QUARTA
+                // WASTELAND EXPLORATION (Começa dia 20/10, repete a cada 14 dias)
+                if (dayOfWeek === 2) {
+                    let diffW = Math.floor((d - new Date('2026-10-20')) / (1000 * 60 * 60 * 24));
+                    if (diffW >= 0 && diffW % 14 === 0) {
+                        let end = new Date(d); end.setDate(end.getDate() + 3); // Terça a Quinta (duração de 3 dias)
+                        eventos.push({ title: 'Wasteland Exploration', start: formatDate(d), end: formatDate(end), ...cores['Wasteland Exploration'] });
+                    }
+                }
+
+                // QUARTA
+                if (dayOfWeek === 3) {
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
@@ -249,7 +285,8 @@
                     }
                 }
 
-                if (dayOfWeek === 5) { // SEXTA
+                // SEXTA
+                if (dayOfWeek === 5) {
                     if (Math.ceil(monthDate / 7) === 2) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(end), ...cores['District Showdown'] });
@@ -261,7 +298,7 @@
                 }
             }
 
-            // Deixa os eventos visíveis globalmente para a futura função de checagem de horário
+            // Exporta os eventos para a função de notificação conseguir ler
             window.eventosGlobais = eventos;
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -280,6 +317,9 @@
                 eventTextColor: '#ffffff' 
             });
             calendar.render();
+
+            // Inicia o vigia logo após o calendário carregar
+            scheduleAlarm();
         });
     </script>
 </body>
