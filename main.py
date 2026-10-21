@@ -117,19 +117,17 @@ if __name__ == "__main__":
     # =====================================================
     # TESTE FORÇADO: Duas mensagens separadas (inglês)
     # =====================================================
-    print("Iniciando testes...")
+    # print("Iniciando testes...")
+    # 
+    # msg_teste_ree = f"🧪 *TEST 1 - Pompeii Reminder:*\n📢 *Tomorrow:* The Recovery Of Pompeii!\n{REE_USERNAME} (R4), would you like to make an in-game reminder that there is still time for registrations?"
+    # send_telegram_message(msg_teste_ree)
+    # 
+    # msg_teste_maii = f"🧪 *TEST 2 - Federation Buff:*\n👑 *{MAII_USERNAME} (R5)*: Don't forget the *Federation Buff* at 14:00 UTC!"
+    # send_telegram_message(msg_teste_maii)
+    # 
+    # print("Testes enviados!")
     
-    # Teste 1: Mencionando a Ree
-    msg_teste_ree = f"🧪 *TEST 1 - Pompeii Reminder:*\n📢 *Tomorrow:* The Recovery Of Pompeii!\n{REE_USERNAME} (R4), would you like to make an in-game reminder that there is still time for registrations?"
-    send_telegram_message(msg_teste_ree)
-    
-    # Teste 2: Mencionando a Maii
-    msg_teste_maii = f"🧪 *TEST 2 - Federation Buff:*\n👑 *{MAII_USERNAME} (R5)*: Don't forget the *Federation Buff* at 14:00 UTC!"
-    send_telegram_message(msg_teste_maii)
-    
-    print("Testes enviados!")
-    
-    # --- PRODUÇÃO (Descomente as linhas abaixo quando terminar o teste) ---
-    # now = datetime.datetime.now(datetime.timezone.utc)
-    # print(f"Rodando em: {now.strftime('%Y-%m-%d %H:%M')} UTC")
-    # process_commands(now)
+    # --- PRODUÇÃO ---
+    now = datetime.datetime.now(datetime.timezone.utc)
+    print(f"Rodando em: {now.strftime('%Y-%m-%d %H:%M')} UTC")
+    process_commands(now)
