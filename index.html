@@ -5,36 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doomsday: Last Survivors - Alliance Calendar</title>
 
+    <!-- Fontes e Ícones -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    
+    <!-- Estilos do FullCalendar -->
     <link href='https://unpkg.com/fullcalendar@6.1.15/index.global.min.css' rel='stylesheet' />
     
     <style>
+        /* --- CONFIGURAÇÃO DO FUNDO --- */
         body { 
             font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #e0e0e0; 
             background: linear-gradient(rgba(17, 17, 17, 0.85), rgba(17, 17, 17, 0.85)), url('background.png') no-repeat center center fixed;
             background-size: cover;
         }
+
+        /* --- HEADER --- */
         .header-container { text-align: center; margin-bottom: 30px; margin-top: 10px; }
         .header-title { font-family: 'Orbitron', sans-serif; font-size: 2.5em; color: #ffffff; text-transform: uppercase; letter-spacing: 3px; margin: 0; text-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
         .header-title span { color: #ff9800; text-shadow: 0 0 15px rgba(255, 152, 0, 0.8); }
+
+        /* --- LAYOUT --- */
         .main-container { display: flex; gap: 20px; max-width: 1600px; margin: 0 auto; align-items: flex-start; }
         .calendar-column { flex: 4; background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.8); }
         .sidebar-column { flex: 1; min-width: 260px; background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-        
-        #game-clock { display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 1.5em; color: #e0e0e0; margin-bottom: 25px; padding: 15px; border-radius: 8px; border: 1px solid #333; background-color: #111; font-family: 'Share Tech Mono', monospace; }
+
+        /* --- RELÓGIO --- */
+        #game-clock { display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 1.5em; color: #e0e0e0; padding: 15px; border-radius: 8px; border: 1px solid #333; background-color: #111; font-family: 'Share Tech Mono', monospace; }
         #game-clock .material-symbols-outlined { font-size: 1.2em; color: #e0e0e0; }
-
-        #enable-notifications { width: 100%; padding: 10px; margin-bottom: 10px; background-color: #ff9800; color: #111; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        #enable-notifications:hover { background-color: #e68a00; }
-        #enable-notifications:disabled { background-color: #333; color: #666; cursor: not-allowed; }
-
-        #test-notification { width: 100%; padding: 10px; margin-bottom: 15px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; display: none; }
-        #test-notification:hover { background-color: #45a049; }
-
-        .checkbox-list { display: flex; flex-direction: column; gap: 12px; }
-        .checkbox-item { display: flex; align-items: center; font-size: 0.95em; cursor: pointer; color: #ccc; }
-        .checkbox-item input[type="checkbox"] { margin-right: 10px; width: 18px; height: 18px; accent-color: #ff9800; cursor: pointer; }
 
         /* --- ESTILOS DO CALENDÁRIO --- */
         .fc-theme-standard th { background-color: #101010 !important; border-color: #333; }
@@ -46,7 +44,7 @@
         .fc-button-primary { background-color: #333; border-color: #444; }
         .fc-button-primary:hover { background-color: #ff9800; border-color: #ff9800; color: #111;}
 
-        /* --- ANIMAÇÕES --- */
+        /* --- ANIMAÇÕES DO DIA ATUAL --- */
         @keyframes pulse-bg {
             0% { background-color: rgba(255, 152, 0, 0.4); }
             50% { background-color: rgba(255, 152, 0, 0.75); }
@@ -63,6 +61,7 @@
         .fc-day-today .fc-daygrid-day-top { display: flex; flex-direction: row !important; justify-content: flex-end !important; align-items: center; padding-right: 4px; }
         .today-icon { font-size: 18px; color: #e0e0e0; margin-right: 4px; display: inline-block; animation: pulse-icon 1s infinite ease-in-out; }
         
+        /* Responsividade */
         @media (max-width: 900px) {
             .main-container { flex-direction: column; }
             .calendar-column, .sidebar-column { width: 100%; box-sizing: border-box; }
@@ -82,143 +81,43 @@
         </div>
 
         <div class="sidebar-column">
+            <!-- O Relógio fica aqui, centralizado -->
             <div id="game-clock">
                 <span class="material-symbols-outlined">schedule</span>
                 <span id="clock-time">--:--:-- UTC</span>
-            </div>
-            
-            <h3 style="color: #e0e0e0; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px;">Notify Me</h3>
-            
-            <button id="enable-notifications">Enable Browser Notifications</button>
-            <button id="test-notification">Test Notification</button>
-
-            <div class="checkbox-list" id="event-checkboxes">
-                <label class="checkbox-item"><input type="checkbox" data-event="Water War"> Water War</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="Anpede Hunt"> Anpede Hunt</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="Horde Defense"> Horde Defense</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="The Recovery Of Pompeii"> The Recovery Of Pompeii</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="Off-Limits War"> Off-Limits War</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="All-Star Night"> All-Star Night</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="Wasteland Exploration"> Wasteland Exploration</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="Alliance League"> Alliance League</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="Archipelago Raid (AR)"> Archipelago Raid</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="Island Raid (IR)"> Island Raid</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="District Showdown"> District Showdown</label>
-                <label class="checkbox-item"><input type="checkbox" data-event="Extreme Showdown"> Extreme Showdown</label>
             </div>
         </div>
     </div>
 
     <script src='https://unpkg.com/fullcalendar@6.1.15/index.global.min.js'></script>
 
-        <script src='https://unpkg.com/fullcalendar@6.1.15/index.global.min.js'></script>
-
     <script>
         let calendar;
 
-        // --- REGISTRA O SERVICE WORKER (Obrigatório para notificações modernas) ---
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(function(registration) {
-                console.log('Service Worker registrado com sucesso.');
-                window.swRegistration = registration;
-            }).catch(function(err) {
-                console.log('Falha no registro do Service Worker:', err);
-            });
-        }
-
-        // --- LÓGICA DO RELÓGIO E DO VIGIA ---
+        // --- LÓGICA DO RELÓGIO E ATUALIZAÇÃO DA DATA (UTC) ---
         function tick() {
             const now = new Date();
+            
+            // Atualiza o Relógio
             const utcHours = String(now.getUTCHours()).padStart(2, '0');
             const utcMinutes = String(now.getUTCMinutes()).padStart(2, '0');
             const utcSeconds = String(now.getUTCSeconds()).padStart(2, '0');
             document.getElementById('clock-time').innerText = `${utcHours}:${utcMinutes}:${utcSeconds} UTC`;
 
+            // Verifica se o dia (em UTC) mudou (para atualizar o "hoje" no calendário à meia-noite)
             const currentDateString = now.toISOString().split('T')[0];
             if (window.lastCheckedDate !== currentDateString) {
                 window.lastCheckedDate = currentDateString;
-                if (calendar) calendar.render(); 
-            }
-
-            if (utcHours === '23' && utcMinutes === '45') {
-                const lastNotified = localStorage.getItem('lastNotifiedDate');
-                if (lastNotified !== currentDateString) {
-                    triggerNotifications(currentDateString);
-                    localStorage.setItem('lastNotifiedDate', currentDateString);
+                if (calendar) {
+                    calendar.render(); // Recalcula o "hoje" baseado no UTC
                 }
             }
         }
 
-        setInterval(tick, 30000); 
-        tick(); 
+        setInterval(tick, 1000); // Atualiza o relógio a cada segundo
+        tick();
 
-        // --- SISTEMA DE NOTIFICAÇÕES ---
-        const btnEnable = document.getElementById('enable-notifications');
-        const btnTest = document.getElementById('test-notification');
-        
-        function updateNotificationUI() {
-            if (!("Notification" in window)) {
-                btnEnable.innerText = "Notifications not supported";
-                btnEnable.disabled = true;
-            } else if (Notification.permission === "granted") {
-                btnEnable.innerText = "Notifications Enabled ✓";
-                btnEnable.disabled = true;
-                btnEnable.style.backgroundColor = "#4CAF50";
-                btnTest.style.display = "block";
-            } else if (Notification.permission === "denied") {
-                btnEnable.innerText = "Notifications Blocked";
-                btnEnable.disabled = true;
-                btnEnable.style.backgroundColor = "#f44336";
-            }
-        }
-        updateNotificationUI();
-
-        btnEnable.addEventListener('click', function() {
-            Notification.requestPermission().then(function() {
-                updateNotificationUI();
-            });
-        });
-
-        // FUNÇÃO DE TESTE USANDO SERVICE WORKER
-        btnTest.addEventListener('click', function() {
-            if (window.swRegistration && Notification.permission === "granted") {
-                window.swRegistration.showNotification("Test Notification", {
-                    body: "If you see this, the Service Worker is working!",
-                    icon: 'https://cdn-icons-png.flaticon.com/512/2903/2903722.png'
-                });
-            } else {
-                alert("Service Worker não está pronto ainda. Aguarde 1 minuto e tente de novo, ou dê F5.");
-            }
-        });
-
-        const checkboxes = document.querySelectorAll('#event-checkboxes input[type="checkbox"]');
-        checkboxes.forEach(cb => {
-            const eventName = cb.getAttribute('data-event');
-            cb.checked = localStorage.getItem('notify_' + eventName) === 'true';
-            cb.addEventListener('change', function() {
-                localStorage.setItem('notify_' + eventName, this.checked);
-            });
-        });
-
-        function triggerNotifications(dateStr) {
-            if (Notification.permission !== "granted" || !window.swRegistration) return;
-
-            const eventsToday = window.eventosGlobais.filter(ev => {
-                return dateStr >= ev.start && dateStr < ev.end;
-            });
-
-            eventsToday.forEach(ev => {
-                const isChecked = localStorage.getItem('notify_' + ev.title) === 'true';
-                if (isChecked) {
-                    window.swRegistration.showNotification(`Event Alert: ${ev.title}`, {
-                        body: `15 minutes until reset! Get ready for ${ev.title}.`,
-                        icon: 'https://cdn-icons-png.flaticon.com/512/2903/2903722.png'
-                    });
-                }
-            });
-        }
-
-        // --- LÓGICA DO CALENDÁRIO (MANTIDA) ---
+        // --- LÓGICA DO CALENDÁRIO ---
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             
@@ -227,6 +126,7 @@
             var endDate = new Date('2027-12-31');   
             var cycleStart = new Date('2026-10-05'); 
 
+            // Paleta de cores dos eventos
             var cores = {
                 'Water War': { backgroundColor: 'rgba(52, 152, 219, 0.85)', borderColor: 'rgba(52, 152, 219, 1)' },
                 'Anpede Hunt': { backgroundColor: 'rgba(231, 76, 60, 0.85)', borderColor: 'rgba(231, 76, 60, 1)' },
@@ -262,18 +162,20 @@
                 let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 let isWeek1 = (Math.round(diffDays / 7) % 2 === 0);
 
-                if (dayOfWeek === 1) {
+                if (dayOfWeek === 1) { // SEGUNDA
                     let end = new Date(d); end.setDate(end.getDate() + 3);
                     eventos.push({ title: 'Water War', start: formatDate(d), end: formatDate(end), ...cores['Water War'] });
+                    
                     let endA = new Date(d); endA.setDate(endA.getDate() + 1);
                     eventos.push({ title: 'Anpede Hunt', start: formatDate(d), end: formatDate(endA), ...cores['Anpede Hunt'] });
+
                     if (isWeek1) {
                         let endAS = new Date(d); endAS.setDate(endAS.getDate() + 7);
                         eventos.push({ title: 'All-Star Night', start: formatDate(d), end: formatDate(endAS), ...cores['All-Star Night'] });
                     }
                 }
 
-                if (dayOfWeek === 2) {
+                if (dayOfWeek === 2) { // TERÇA
                     if (isWeek1) {
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'The Recovery Of Pompeii', start: formatDate(d), end: formatDate(end), ...cores['The Recovery Of Pompeii'] });
@@ -281,25 +183,27 @@
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'Off-Limits War', start: formatDate(d), end: formatDate(end), ...cores['Off-Limits War'] });
                     }
+
                     if (d.getMonth() !== nextWeek.getMonth()) {
                         let end = new Date(d); end.setDate(end.getDate() + 6);
                         eventos.push({ title: 'Alliance League', start: formatDate(d), end: formatDate(end), ...cores['Alliance League'] });
                     }
-                }
 
-                if (dayOfWeek === 2) {
+                    // WASTELAND EXPLORATION
                     let target = new Date('2026-10-20T00:00:00Z');
                     let current = new Date(formatDate(d) + 'T00:00:00Z');
                     let diffW = Math.round((current - target) / (1000 * 60 * 60 * 24));
+                    
                     if (diffW >= 0 && diffW % 14 === 0) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'Wasteland Exploration', start: formatDate(d), end: formatDate(end), ...cores['Wasteland Exploration'] });
                     }
                 }
 
-                if (dayOfWeek === 3) {
+                if (dayOfWeek === 3) { // QUARTA
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
+
                     if (Math.ceil(monthDate / 7) === 2) {
                         let endAR = new Date(d); endAR.setDate(endAR.getDate() + 5);
                         eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
@@ -310,7 +214,7 @@
                     }
                 }
 
-                if (dayOfWeek === 5) {
+                if (dayOfWeek === 5) { // SEXTA
                     if (Math.ceil(monthDate / 7) === 2) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(end), ...cores['District Showdown'] });
@@ -322,12 +226,12 @@
                 }
             }
 
-            window.eventosGlobais = eventos;
+            window.eventosGlobais = eventos; // Exporta para o futuro bot
 
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 firstDay: 1, 
-                timeZone: 'UTC', 
+                timeZone: 'UTC', // Mantém a precisão do fuso horário do jogo
                 dayHeaderFormat: { weekday: 'long' }, 
                 headerToolbar: {
                     left: 'prev,next today',
@@ -339,6 +243,8 @@
                 dayMaxEvents: 4, 
                 height: 'auto',
                 eventTextColor: '#ffffff',
+                
+                // Ícone de "hoje"
                 dayCellDidMount: function(arg) {
                     if (arg.isToday) {
                         var topEl = arg.el.querySelector('.fc-daygrid-day-top');
