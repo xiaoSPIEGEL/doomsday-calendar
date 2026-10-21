@@ -1,9 +1,6 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-# Changelog
-All notable changes to this project will be documented in this file.
-
 ## [1.1.0] - 2026-10-21
 ### Added
 - **Telegram Bot Integration:** Created `main.py` and configured GitHub Actions (`bot.yml`) to automatically send event reminders to the alliance's Telegram group.
