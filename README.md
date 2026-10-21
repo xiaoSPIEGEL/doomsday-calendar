@@ -13,12 +13,14 @@ This tool accurately calculates the cycle of every major in-game event (Water Wa
 - **Custom Sci-Fi Dark Mode:** A unique, sleek UI featuring custom fonts (Orbitron & Share Tech Mono) and a tactical layout.
 - **Today Highlight:** The current day pulses smoothly and features a breathing user icon, making it easy to spot at a glance.
 - **Mobile Friendly:** The layout automatically stacks on smaller screens for easy checking on the go.
+- **Telegram Bot Integration:** A dedicated bot sends daily reminders directly to the alliance's Telegram group before major resets, ensuring native push notifications for Android and iOS users.
 
 ## Roadmap (Work In Progress)
 
 We are constantly improving the tool. Here is what is planned for the future:
 
-- [ ] **Telegram Bot Integration:** A dedicated bot that automatically sends reminders to the alliance's Telegram group before major resets. *(This will ensure native push notifications for both Android and iOS users without relying on browser limitations).*
+- [ ] **Custom Notification Rules:** Implement event-specific notification timings (e.g., 15 minutes before a quick event, but 12 hours before a multi-day event) to avoid spamming the Telegram group.
+- [ ] **Bot Privacy Mode & Testing:** Finalize the bot configuration with the alliance leadership before deploying to the main group.
 
 ## Built With
 
@@ -26,6 +28,8 @@ We are constantly improving the tool. Here is what is planned for the future:
 - Vanilla JavaScript
 - [FullCalendar.io](https://fullcalendar.io/) (Event rendering engine)
 - Google Fonts & Material Symbols (Icons)
+- Python (Telegram Bot logic)
+- GitHub Actions (Automated bot scheduling)
 
 ## Contributing
 
