@@ -53,12 +53,43 @@ def process_commands(now):
         elif day_of_week == 1 and "The Recovery Of Pompeii" in " ".join(events_today):
             msg = "⏰ *Get Ready!* *The Recovery Of Pompeii* starts in 30 minutes (15:00 UTC). It's an important GvG event, be on time!"
             
-        # Reminder for Witch (All-Star Night)
         if "All-Star Night" in " ".join(events_today):
              msg += "\n\n👑 *Witch (R5)*: Don't forget the *Federation Buff* at 14:00 UTC!"
              
         if msg: send_telegram_message(msg)
         
+    # --- 23:00 UTC (Eve Reminders - 1 hour before reset) ---
+    elif hour == 23 and minute == 0:
+        full_msg = []
+        
+        tomorrow = day_of_week + 1 if day_of_week < 6 else 0
+        tomorrow_week_num = (now.day + 1 - 1) // 7 + 1 # (day+1-1) handles end of month 
+        
+        if tomorrow == 1: # Tuesday
+            # Pompeii Check
+            if ((now - datetime.datetime(2026, 10, 5, tzinfo=datetime.timezone.utc)).days + 1) // 7 % 2 == 0:
+                 full_msg.append("📢 *Tomorrow:* The Recovery Of Pompeii!\n@Ree (R4), would you like to make an in-game reminder that there is still time for registrations?")
+            # Off-Limits Check
+            else:
+                 full_msg.append("📢 *Tomorrow:* Off-Limits War! Start forming your teams of 8.")
+                 
+            # Wasteland Check
+            if ((now - datetime.datetime(2026, 10, 20, tzinfo=datetime.timezone.utc)).days + 1) % 14 == 0:
+                 full_msg.append("📢 *Tomorrow:* Wasteland Exploration! Form your teams of 4.")
+                 
+        elif tomorrow == 2: # Wednesday (AR / IR)
+            if tomorrow_week_num == 2:
+                 full_msg.append("📢 *Tomorrow:* Archipelago Raid (AR)!\n@Ree (R4), would you like to remind everyone in-game to register?")
+            elif tomorrow_week_num == 4:
+                 full_msg.append("📢 *Tomorrow:* Island Raid (IR)!\n@Ree (R4), would you like to remind everyone in-game to register?")
+                 
+        elif tomorrow == 4: # Friday (Extreme Showdown)
+             if tomorrow_week_num == 4:
+                 full_msg.append("📢 *Tomorrow:* Extreme Showdown!\n@Ree (R4), would you like to remind everyone in-game to register?")
+
+        if full_msg:
+            send_telegram_message("\n\n".join(full_msg))
+
     # --- 23:30 UTC (Closing Events & Sundays) ---
     elif hour == 23 and minute == 30:
         msgs = []
@@ -75,37 +106,12 @@ def process_commands(now):
         if msgs:
             send_telegram_message("\n\n".join(msgs))
 
-    # --- 23:45 UTC (Daily Summary & Eve of Events) ---
-    elif hour == 23 and minute == 45:
-        full_msg = []
-        
-        # 1. Eve Reminders (Tomorrow)
-        tomorrow = day_of_week + 1 if day_of_week < 6 else 0
-        if tomorrow == 1:
-            if ((now - datetime.datetime(2026, 10, 5, tzinfo=datetime.timezone.utc)).days + 1) // 7 % 2 == 0:
-                 full_msg.append("📢 *Tomorrow:* The Recovery Of Pompeii! Talk to *Ree (R4)* to register. Participation is crucial!")
-            else:
-                 full_msg.append("📢 *Tomorrow:* Off-Limits War! Start forming your teams of 8.")
-            if ((now - datetime.datetime(2026, 10, 20, tzinfo=datetime.timezone.utc)).days + 1) % 14 == 0:
-                 full_msg.append("📢 *Tomorrow:* Wasteland Exploration! Form your teams of 4.")
-
-        # 2. Today's Digest
-        if events_today:
-            digest = "📅 *Today's Summary (UTC):*\n" + "\n".join([f"• {ev}" for ev in events_today])
-            full_msg.append(digest)
-            
-        if full_msg:
-            send_telegram_message("\n\n".join(full_msg))
-
 if __name__ == "__main__":
-    # TESTE FORÇADO: Descomente as linhas abaixo para testar as mensagens em inglês
-    print("Iniciando teste forçado...")
-    msg_teste = "🧪 *This is a test notification!*\n\n"
-    msg_teste += "If you received this, the Bot is working perfectly and ready for events.\n"
-    msg_teste += "📢 *Reminder:* Simulating a Pompeii eve reminder (talk to Ree)."
-    send_telegram_message(msg_teste)
+    # TESTE FORÇADO: Descomente para testar
+    # msg_teste = "🧪 *Teste de Véspera:*\n📢 *Tomorrow:* The Recovery Of Pompeii!\n@Ree (R4), would you like to make an in-game reminder that there is still time for registrations?"
+    # send_telegram_message(msg_teste)
     
-    # CÓDIGO DE PRODUÇÃO (Roda nos horários agendados)
+    # PRODUÇÃO
     now = datetime.datetime.now(datetime.timezone.utc)
     print(f"Rodando em: {now.strftime('%Y-%m-%d %H:%M')} UTC")
     process_commands(now)
