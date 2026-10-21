@@ -4,6 +4,8 @@ import datetime
 
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+REE_USERNAME = os.environ.get("REE_USERNAME", "@ReePatr1cia") 
+MAII_USERNAME = os.environ.get("MAII_USERNAME", "@Mayo017")   
 
 def send_telegram_message(text):
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
@@ -54,7 +56,8 @@ def process_commands(now):
             msg = "⏰ *Get Ready!* *The Recovery Of Pompeii* starts in 30 minutes (15:00 UTC). It's an important GvG event, be on time!"
             
         if "All-Star Night" in " ".join(events_today):
-             msg += "\n\n👑 *Witch (R5)*: Don't forget the *Federation Buff* at 14:00 UTC!"
+             # CORRIGIDO: f-string unificada
+             msg += f"\n\n👑 *{MAII_USERNAME} (R5)*: Don't forget the *Federation Buff* at 14:00 UTC!"
              
         if msg: send_telegram_message(msg)
         
@@ -63,12 +66,13 @@ def process_commands(now):
         full_msg = []
         
         tomorrow = day_of_week + 1 if day_of_week < 6 else 0
-        tomorrow_week_num = (now.day + 1 - 1) // 7 + 1 # (day+1-1) handles end of month 
+        tomorrow_week_num = (now.day + 1 - 1) // 7 + 1 
         
         if tomorrow == 1: # Tuesday
             # Pompeii Check
             if ((now - datetime.datetime(2026, 10, 5, tzinfo=datetime.timezone.utc)).days + 1) // 7 % 2 == 0:
-                 full_msg.append("📢 *Tomorrow:* The Recovery Of Pompeii!\n@Ree (R4), would you like to make an in-game reminder that there is still time for registrations?")
+                 # CORRIGIDO: f-string unificada
+                 full_msg.append(f"📢 *Tomorrow:* The Recovery Of Pompeii!\n{REE_USERNAME} (R4), would you like to make an in-game reminder that there is still time for registrations?")
             # Off-Limits Check
             else:
                  full_msg.append("📢 *Tomorrow:* Off-Limits War! Start forming your teams of 8.")
@@ -79,13 +83,16 @@ def process_commands(now):
                  
         elif tomorrow == 2: # Wednesday (AR / IR)
             if tomorrow_week_num == 2:
-                 full_msg.append("📢 *Tomorrow:* Archipelago Raid (AR)!\n@Ree (R4), would you like to remind everyone in-game to register?")
+                 # CORRIGIDO: f-string unificada
+                 full_msg.append(f"📢 *Tomorrow:* Archipelago Raid (AR)!\n{REE_USERNAME} (R4), would you like to remind everyone in-game to register?")
             elif tomorrow_week_num == 4:
-                 full_msg.append("📢 *Tomorrow:* Island Raid (IR)!\n@Ree (R4), would you like to remind everyone in-game to register?")
+                 # CORRIGIDO: f-string unificada
+                 full_msg.append(f"📢 *Tomorrow:* Island Raid (IR)!\n{REE_USERNAME} (R4), would you like to remind everyone in-game to register?")
                  
         elif tomorrow == 4: # Friday (Extreme Showdown)
              if tomorrow_week_num == 4:
-                 full_msg.append("📢 *Tomorrow:* Extreme Showdown!\n@Ree (R4), would you like to remind everyone in-game to register?")
+                 # CORRIGIDO: f-string unificada
+                 full_msg.append(f"📢 *Tomorrow:* Extreme Showdown!\n{REE_USERNAME} (R4), would you like to remind everyone in-game to register?")
 
         if full_msg:
             send_telegram_message("\n\n".join(full_msg))
@@ -107,11 +114,22 @@ def process_commands(now):
             send_telegram_message("\n\n".join(msgs))
 
 if __name__ == "__main__":
-    # TESTE FORÇADO: Descomente para testar
-    msg_teste = "🧪 *Teste de Véspera:*\n📢 *Tomorrow:* The Recovery Of Pompeii!\n@Ree (R4), would you like to make an in-game reminder that there is still time for registrations?"
-    send_telegram_message(msg_teste)
+    # =====================================================
+    # TESTE FORÇADO: Duas mensagens separadas (inglês)
+    # =====================================================
+    print("Iniciando testes...")
     
-    # PRODUÇÃO
-    now = datetime.datetime.now(datetime.timezone.utc)
-    print(f"Rodando em: {now.strftime('%Y-%m-%d %H:%M')} UTC")
-    process_commands(now)
+    # Teste 1: Mencionando a Ree
+    msg_teste_ree = f"🧪 *TEST 1 - Pompeii Reminder:*\n📢 *Tomorrow:* The Recovery Of Pompeii!\n{REE_USERNAME} (R4), would you like to make an in-game reminder that there is still time for registrations?"
+    send_telegram_message(msg_teste_ree)
+    
+    # Teste 2: Mencionando a Maii
+    msg_teste_maii = f"🧪 *TEST 2 - Federation Buff:*\n👑 *{MAII_USERNAME} (R5)*: Don't forget the *Federation Buff* at 14:00 UTC!"
+    send_telegram_message(msg_teste_maii)
+    
+    print("Testes enviados!")
+    
+    # --- PRODUÇÃO (Descomente as linhas abaixo quando terminar o teste) ---
+    # now = datetime.datetime.now(datetime.timezone.utc)
+    # print(f"Rodando em: {now.strftime('%Y-%m-%d %H:%M')} UTC")
+    # process_commands(now)
