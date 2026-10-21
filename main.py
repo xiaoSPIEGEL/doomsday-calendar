@@ -99,11 +99,11 @@ def process_commands(now):
 
 if __name__ == "__main__":
     # TESTE FORÇADO: Descomente as linhas abaixo para testar as mensagens em inglês
-    # print("Iniciando teste forçado...")
-    # msg_teste = "🧪 *This is a test notification!*\n\n"
-    # msg_teste += "If you received this, the Bot is working perfectly and ready for events.\n"
-    # msg_teste += "📢 *Reminder:* Simulating a Pompeii eve reminder (talk to Ree)."
-    # send_telegram_message(msg_teste)
+    print("Iniciando teste forçado...")
+    msg_teste = "🧪 *This is a test notification!*\n\n"
+    msg_teste += "If you received this, the Bot is working perfectly and ready for events.\n"
+    msg_teste += "📢 *Reminder:* Simulating a Pompeii eve reminder (talk to Ree)."
+    send_telegram_message(msg_teste)
     
     # CÓDIGO DE PRODUÇÃO (Roda nos horários agendados)
     now = datetime.datetime.now(datetime.timezone.utc)
