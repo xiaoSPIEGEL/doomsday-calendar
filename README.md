@@ -2,7 +2,7 @@
 
 A sleek, interactive web calendar and notification system designed for the **Doomsday: Last Survivors** community. Created and maintained by **xiaoSPIEGEL**.
 
-This tool accurately calculates the cycle of every major in-game event (Water War, Alliance League, Raids, etc.) based on their specific weekly, bi-weekly, and monthly rules. It also features an automated Telegram Bot that sends intelligent reminders directly to the alliance group.
+This tool accurately calculates the cycle of every major in-game event (AR, IR, Pompeii, etc.) based on their specific weekly, bi-weekly, and monthly rules. It also features an automated Telegram Bot that sends intelligent reminders directly to the alliance group.
 
 **Live Website:** [https://xiaospiegel.github.io/doomsday-calendar/](https://xiaospiegel.github.io/doomsday-calendar/)
 
