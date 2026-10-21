@@ -99,6 +99,15 @@ def process_commands(now):
             send_telegram_message("\n\n".join(full_msg))
 
 if __name__ == "__main__":
+    print("Iniciando teste forçado de mensagens...")
+    
+    # Simulando o horário de 23:45 UTC para testar o resumo diário e véspera
     now = datetime.datetime.now(datetime.timezone.utc)
-    print(f"Rodando em: {now.strftime('%Y-%m-%d %H:%M')} UTC")
-    process_commands(now)
+    
+    # Força a mensagem de aviso de véspera (como se fosse domingo à noite)
+    msg_teste = "🧪 *Este é um teste de notificação!*\n\n"
+    msg_teste += "Se você recebeu isso, o Bot está funcionando perfeitamente e pronto para os eventos.\n"
+    msg_teste += "📢 *Aviso:* Simulando um aviso de véspera de Pompeii (falar com a Ree)."
+    
+    send_telegram_message(msg_teste)
+    print("Mensagem de teste enviada!")
