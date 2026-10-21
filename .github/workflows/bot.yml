@@ -26,4 +26,6 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          REE_USERNAME: ${{ secrets.REE_USERNAME }}
+          MAII_USERNAME: ${{ secrets.MAII_USERNAME }}
         run: python main.py
