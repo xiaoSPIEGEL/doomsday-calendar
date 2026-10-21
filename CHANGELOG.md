@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# Changelog
+All notable changes to this project will be documented in this file.
+
+## [1.1.0] - 2026-10-21
+### Added
+- **Telegram Bot Integration:** Created `main.py` and configured GitHub Actions (`bot.yml`) to automatically send event reminders to the alliance's Telegram group.
+- Smart notification rules implemented: alerts for event prep (30m before), registration reminders (1h before reset), and end-of-event warnings (30m before reset).
+- Integration of dynamic mentions using GitHub Secrets (`REE_USERNAME`, `MAII_USERNAME`) to tag R4/R5 leaders without exposing usernames in the public code.
+
+### Removed
+- Abandoned the browser Service Worker (`sw.js`) approach due to browser restrictions. Focus shifted entirely to the Telegram Bot for reliable notifications.
+
 ## [1.0.0] - 2026-10-20
 ### Added
 - Initial stable release of the Alliance Event Tracker.
