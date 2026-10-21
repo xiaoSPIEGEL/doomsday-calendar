@@ -20,19 +20,70 @@
             background-size: cover;
         }
 
-        /* --- HEADER --- */
-        .header-container { text-align: center; margin-bottom: 30px; margin-top: 10px; }
-        .header-title { font-family: 'Orbitron', sans-serif; font-size: 2.5em; color: #ffffff; text-transform: uppercase; letter-spacing: 3px; margin: 0; text-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
-        .header-title span { color: #ff9800; text-shadow: 0 0 15px rgba(255, 152, 0, 0.8); }
+        /* --- BARRA SUPERIOR (HEADER + RELÓGIO) --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between; /* Empurra o header pra esquerda e o relógio pra direita */
+            align-items: center;
+            max-width: 1400px; /* Alinhado com a largura do calendário */
+            margin: 0 auto 30px auto; /* Centraliza e dá margem para o calendário abaixo */
+            padding: 0 10px;
+        }
 
-        /* --- LAYOUT --- */
-        .main-container { display: flex; gap: 20px; max-width: 1600px; margin: 0 auto; align-items: flex-start; }
-        .calendar-column { flex: 4; background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-        .sidebar-column { flex: 1; min-width: 260px; background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        /* --- HEADER --- */
+        .header-title { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 2em; 
+            color: #ffffff; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            margin: 0; 
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-title .highlight { 
+            color: #ff9800; 
+            text-shadow: 0 0 15px rgba(255, 152, 0, 0.8);
+        }
+
+        /* O Traço Separador */
+        .divider {
+            width: 40px;
+            height: 2px;
+            background-color: #ff9800;
+            display: inline-block;
+            margin: 0 15px;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(255, 152, 0, 0.8);
+        }
 
         /* --- RELÓGIO --- */
-        #game-clock { display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 1.5em; color: #e0e0e0; padding: 15px; border-radius: 8px; border: 1px solid #333; background-color: #111; font-family: 'Share Tech Mono', monospace; }
+        #game-clock { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-size: 1.3em; 
+            color: #e0e0e0; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            border: 1px solid #333; 
+            background-color: #111; 
+            font-family: 'Share Tech Mono', monospace; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
         #game-clock .material-symbols-outlined { font-size: 1.2em; color: #e0e0e0; }
+
+        /* --- CONTAINER DO CALENDÁRIO --- */
+        .calendar-container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            background: #1e1e1e; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.8); 
+        }
 
         /* --- ESTILOS DO CALENDÁRIO --- */
         .fc-theme-standard th { background-color: #101010 !important; border-color: #333; }
@@ -61,32 +112,35 @@
         .fc-day-today .fc-daygrid-day-top { display: flex; flex-direction: row !important; justify-content: flex-end !important; align-items: center; padding-right: 4px; }
         .today-icon { font-size: 18px; color: #e0e0e0; margin-right: 4px; display: inline-block; animation: pulse-icon 1s infinite ease-in-out; }
         
-        /* Responsividade */
+        /* Responsividade (Celular) */
         @media (max-width: 900px) {
-            .main-container { flex-direction: column; }
-            .calendar-column, .sidebar-column { width: 100%; box-sizing: border-box; }
-            .header-title { font-size: 1.8em; }
+            .top-bar { 
+                flex-direction: column; /* Empilha no celular */
+                gap: 20px; 
+                text-align: center;
+            }
+            .header-title { font-size: 1.5em; }
+            .divider { display: none; } /* Esconde o traço no celular para não quebrar a linha */
         }
     </style>
 </head>
 <body>
 
-    <div class="header-container">
-        <h1 class="header-title">XIAOSPIEGEL <span>EVENT TRACKER</span></h1>
+    <!-- BARRA SUPERIOR -->
+    <div class="top-bar">
+        <h1 class="header-title">
+            XIAOSPIEGEL <span class="divider"></span> <span class="highlight">EVENT TRACKER</span>
+        </h1>
+
+        <div id="game-clock">
+            <span class="material-symbols-outlined">schedule</span>
+            <span id="clock-time">--:--:-- UTC</span>
+        </div>
     </div>
 
-    <div class="main-container">
-        <div class="calendar-column">
-            <div id="calendar"></div>
-        </div>
-
-        <div class="sidebar-column">
-            <!-- O Relógio fica aqui, centralizado -->
-            <div id="game-clock">
-                <span class="material-symbols-outlined">schedule</span>
-                <span id="clock-time">--:--:-- UTC</span>
-            </div>
-        </div>
+    <!-- CALENDÁRIO -->
+    <div class="calendar-container">
+        <div id="calendar"></div>
     </div>
 
     <script src='https://unpkg.com/fullcalendar@6.1.15/index.global.min.js'></script>
@@ -104,17 +158,17 @@
             const utcSeconds = String(now.getUTCSeconds()).padStart(2, '0');
             document.getElementById('clock-time').innerText = `${utcHours}:${utcMinutes}:${utcSeconds} UTC`;
 
-            // Verifica se o dia (em UTC) mudou (para atualizar o "hoje" no calendário à meia-noite)
+            // Verifica se o dia (em UTC) mudou para atualizar o calendário à meia-noite
             const currentDateString = now.toISOString().split('T')[0];
             if (window.lastCheckedDate !== currentDateString) {
                 window.lastCheckedDate = currentDateString;
                 if (calendar) {
-                    calendar.render(); // Recalcula o "hoje" baseado no UTC
+                    calendar.render(); 
                 }
             }
         }
 
-        setInterval(tick, 1000); // Atualiza o relógio a cada segundo
+        setInterval(tick, 1000); 
         tick();
 
         // --- LÓGICA DO CALENDÁRIO ---
@@ -126,7 +180,6 @@
             var endDate = new Date('2027-12-31');   
             var cycleStart = new Date('2026-10-05'); 
 
-            // Paleta de cores dos eventos
             var cores = {
                 'Water War': { backgroundColor: 'rgba(52, 152, 219, 0.85)', borderColor: 'rgba(52, 152, 219, 1)' },
                 'Anpede Hunt': { backgroundColor: 'rgba(231, 76, 60, 0.85)', borderColor: 'rgba(231, 76, 60, 1)' },
@@ -226,12 +279,10 @@
                 }
             }
 
-            window.eventosGlobais = eventos; // Exporta para o futuro bot
-
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 firstDay: 1, 
-                timeZone: 'UTC', // Mantém a precisão do fuso horário do jogo
+                timeZone: 'UTC', 
                 dayHeaderFormat: { weekday: 'long' }, 
                 headerToolbar: {
                     left: 'prev,next today',
@@ -240,11 +291,10 @@
                 },
                 events: eventos,
                 eventDisplay: 'block', 
-                dayMaxEvents: 4, 
+                dayMaxEvents: 5, 
                 height: 'auto',
                 eventTextColor: '#ffffff',
                 
-                // Ícone de "hoje"
                 dayCellDidMount: function(arg) {
                     if (arg.isToday) {
                         var topEl = arg.el.querySelector('.fc-daygrid-day-top');
