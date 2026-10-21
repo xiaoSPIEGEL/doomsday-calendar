@@ -26,10 +26,10 @@
         /* --- BARRA SUPERIOR (HEADER + RELÓGIO) --- */
         .top-bar {
             display: flex;
-            justify-content: space-between; /* Empurra o header pra esquerda e o relógio pra direita */
+            justify-content: space-between;
             align-items: center;
-            max-width: 1400px; /* Alinhado com a largura do calendário */
-            margin: 0 auto 30px auto; /* Centraliza e dá margem para o calendário abaixo */
+            max-width: 1400px;
+            margin: 0 auto 30px auto;
             padding: 0 10px;
         }
 
@@ -62,14 +62,14 @@
             box-shadow: 0 0 10px rgba(255, 152, 0, 0.8);
         }
 
-                /* --- RELÓGIO --- */
+        /* --- RELÓGIO --- */
         #game-clock { 
             display: flex; 
             align-items: center; 
-            gap: 12px; /* Aumentei o espaço entre ícone e texto */
-            font-size: 1.7em; /* Aumentei de 1.3em para 1.7em (aprox. 30%) */
+            gap: 12px; 
+            font-size: 1.7em; 
             color: #e0e0e0; 
-            padding: 15px 25px; /* Aumentei o padding para acompanhar o tamanho */
+            padding: 15px 25px; 
             border-radius: 8px; 
             border: 1px solid #333; 
             background-color: #111; 
@@ -77,7 +77,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
         #game-clock .material-symbols-outlined { 
-            font-size: 1.3em; /* Aumentei o ícone para ficar proporcional */
+            font-size: 1.3em; 
             color: #e0e0e0; 
         }
 
@@ -127,7 +127,7 @@
             }
             .header-title { font-size: 1.5em; }
             .divider { display: none; }
-            #game-clock { font-size: 1.3em; padding: 10px 15px; } /* Relógio menor no celular */
+            #game-clock { font-size: 1.3em; padding: 10px 15px; }
         }
     </style>
 </head>
@@ -187,8 +187,8 @@
             var endDate = new Date('2027-12-31');   
             var cycleStart = new Date('2026-10-05'); 
 
+            // CORES ATUALIZADAS (Water War removido)
             var cores = {
-                'Water War': { backgroundColor: 'rgba(52, 152, 219, 0.85)', borderColor: 'rgba(52, 152, 219, 1)' },
                 'Anpede Hunt': { backgroundColor: 'rgba(231, 76, 60, 0.85)', borderColor: 'rgba(231, 76, 60, 1)' },
                 'Horde Defense': { backgroundColor: 'rgba(230, 126, 34, 0.85)', borderColor: 'rgba(230, 126, 34, 1)' },
                 'Off-Limits War': { backgroundColor: 'rgba(46, 204, 113, 0.85)', borderColor: 'rgba(46, 204, 113, 1)' },
@@ -223,8 +223,7 @@
                 let isWeek1 = (Math.round(diffDays / 7) % 2 === 0);
 
                 if (dayOfWeek === 1) { // SEGUNDA
-                    let end = new Date(d); end.setDate(end.getDate() + 3);
-                    eventos.push({ title: 'Water War', start: formatDate(d), end: formatDate(end), ...cores['Water War'] });
+                    // Water War removido daqui
                     
                     let endA = new Date(d); endA.setDate(endA.getDate() + 1);
                     eventos.push({ title: 'Anpede Hunt', start: formatDate(d), end: formatDate(endA), ...cores['Anpede Hunt'] });
