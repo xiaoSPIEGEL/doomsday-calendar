@@ -108,8 +108,8 @@ def process_commands(now):
 
 if __name__ == "__main__":
     # TESTE FORÇADO: Descomente para testar
-    # msg_teste = "🧪 *Teste de Véspera:*\n📢 *Tomorrow:* The Recovery Of Pompeii!\n@Ree (R4), would you like to make an in-game reminder that there is still time for registrations?"
-    # send_telegram_message(msg_teste)
+    msg_teste = "🧪 *Teste de Véspera:*\n📢 *Tomorrow:* The Recovery Of Pompeii!\n@Ree (R4), would you like to make an in-game reminder that there is still time for registrations?"
+    send_telegram_message(msg_teste)
     
     # PRODUÇÃO
     now = datetime.datetime.now(datetime.timezone.utc)
