@@ -111,30 +111,35 @@
 
     <script src='https://unpkg.com/fullcalendar@6.1.15/index.global.min.js'></script>
 
-    <script>
-        let calendar; // Variável global para podermos atualizar o calendário à meia-noite
+        <script src='https://unpkg.com/fullcalendar@6.1.15/index.global.min.js'></script>
 
-        // --- LÓGICA DO RELÓGIO E DO VIGIA (RODA A CADA 30 SEGUNDOS) ---
+    <script>
+        let calendar;
+
+        // --- REGISTRA O SERVICE WORKER (Obrigatório para notificações modernas) ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(function(registration) {
+                console.log('Service Worker registrado com sucesso.');
+                window.swRegistration = registration;
+            }).catch(function(err) {
+                console.log('Falha no registro do Service Worker:', err);
+            });
+        }
+
+        // --- LÓGICA DO RELÓGIO E DO VIGIA ---
         function tick() {
             const now = new Date();
-            
-            // Atualiza o Relógio
             const utcHours = String(now.getUTCHours()).padStart(2, '0');
             const utcMinutes = String(now.getUTCMinutes()).padStart(2, '0');
             const utcSeconds = String(now.getUTCSeconds()).padStart(2, '0');
             document.getElementById('clock-time').innerText = `${utcHours}:${utcMinutes}:${utcSeconds} UTC`;
 
-            // Verifica se o dia (em UTC) mudou (para atualizar o "hoje" no calendário)
             const currentDateString = now.toISOString().split('T')[0];
             if (window.lastCheckedDate !== currentDateString) {
                 window.lastCheckedDate = currentDateString;
-                if (calendar) {
-                    // Força o calendário a recalcular qual é o "hoje"
-                    calendar.render(); 
-                }
+                if (calendar) calendar.render(); 
             }
 
-            // Verifica se é hora de notificar (23:45 UTC)
             if (utcHours === '23' && utcMinutes === '45') {
                 const lastNotified = localStorage.getItem('lastNotifiedDate');
                 if (lastNotified !== currentDateString) {
@@ -144,29 +149,12 @@
             }
         }
 
-        // Inicia o loop
         setInterval(tick, 30000); 
-        tick(); // Roda uma vez imediatamente ao carregar
+        tick(); 
 
-        // =========================================================
-        // SISTEMA DE NOTIFICAÇÕES
-        // =========================================================
+        // --- SISTEMA DE NOTIFICAÇÕES ---
         const btnEnable = document.getElementById('enable-notifications');
         const btnTest = document.getElementById('test-notification');
-
-        btnTest.addEventListener('click', function() {
-            // Adiciona um pequeno atraso para garantir que o navegador processe o clique
-            setTimeout(() => {
-                if (Notification.permission === "granted") {
-                    new Notification("Test Notification", { 
-                        body: "If you see this, notifications are working perfectly!",
-                        icon: 'https://cdn-icons-png.flaticon.com/512/2903/2903722.png'
-                    });
-                } else {
-                    alert("Permissão para notificações não foi concedida.");
-                }
-            }, 100); // 100 milissegundos de atraso
-        });
         
         function updateNotificationUI() {
             if (!("Notification" in window)) {
@@ -176,7 +164,7 @@
                 btnEnable.innerText = "Notifications Enabled ✓";
                 btnEnable.disabled = true;
                 btnEnable.style.backgroundColor = "#4CAF50";
-                btnTest.style.display = "block"; // Mostra o botão de teste
+                btnTest.style.display = "block";
             } else if (Notification.permission === "denied") {
                 btnEnable.innerText = "Notifications Blocked";
                 btnEnable.disabled = true;
@@ -188,17 +176,19 @@
         btnEnable.addEventListener('click', function() {
             Notification.requestPermission().then(function() {
                 updateNotificationUI();
-                if (Notification.permission === "granted") {
-                    new Notification("Success!", { body: "You will now receive alerts at 23:45 UTC." });
-                }
             });
         });
 
+        // FUNÇÃO DE TESTE USANDO SERVICE WORKER
         btnTest.addEventListener('click', function() {
-            new Notification("Test Notification", { 
-                body: "If you see this, notifications are working perfectly!",
-                icon: 'https://cdn-icons-png.flaticon.com/512/2903/2903722.png'
-            });
+            if (window.swRegistration && Notification.permission === "granted") {
+                window.swRegistration.showNotification("Test Notification", {
+                    body: "If you see this, the Service Worker is working!",
+                    icon: 'https://cdn-icons-png.flaticon.com/512/2903/2903722.png'
+                });
+            } else {
+                alert("Service Worker não está pronto ainda. Aguarde 1 minuto e tente de novo, ou dê F5.");
+            }
         });
 
         const checkboxes = document.querySelectorAll('#event-checkboxes input[type="checkbox"]');
@@ -211,28 +201,24 @@
         });
 
         function triggerNotifications(dateStr) {
-            if (Notification.permission !== "granted") return;
+            if (Notification.permission !== "granted" || !window.swRegistration) return;
 
             const eventsToday = window.eventosGlobais.filter(ev => {
                 return dateStr >= ev.start && dateStr < ev.end;
             });
 
-            let notifiedAny = false;
             eventsToday.forEach(ev => {
                 const isChecked = localStorage.getItem('notify_' + ev.title) === 'true';
                 if (isChecked) {
-                    new Notification(`Event Alert: ${ev.title}`, {
+                    window.swRegistration.showNotification(`Event Alert: ${ev.title}`, {
                         body: `15 minutes until reset! Get ready for ${ev.title}.`,
                         icon: 'https://cdn-icons-png.flaticon.com/512/2903/2903722.png'
                     });
-                    notifiedAny = true;
                 }
             });
         }
 
-        // =========================================================
-        // LÓGICA DO CALENDÁRIO
-        // =========================================================
+        // --- LÓGICA DO CALENDÁRIO (MANTIDA) ---
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             
@@ -276,20 +262,18 @@
                 let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 let isWeek1 = (Math.round(diffDays / 7) % 2 === 0);
 
-                if (dayOfWeek === 1) { // SEGUNDA
+                if (dayOfWeek === 1) {
                     let end = new Date(d); end.setDate(end.getDate() + 3);
                     eventos.push({ title: 'Water War', start: formatDate(d), end: formatDate(end), ...cores['Water War'] });
-                    
                     let endA = new Date(d); endA.setDate(endA.getDate() + 1);
                     eventos.push({ title: 'Anpede Hunt', start: formatDate(d), end: formatDate(endA), ...cores['Anpede Hunt'] });
-
                     if (isWeek1) {
                         let endAS = new Date(d); endAS.setDate(endAS.getDate() + 7);
                         eventos.push({ title: 'All-Star Night', start: formatDate(d), end: formatDate(endAS), ...cores['All-Star Night'] });
                     }
                 }
 
-                if (dayOfWeek === 2) { // TERÇA
+                if (dayOfWeek === 2) {
                     if (isWeek1) {
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'The Recovery Of Pompeii', start: formatDate(d), end: formatDate(end), ...cores['The Recovery Of Pompeii'] });
@@ -297,29 +281,25 @@
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'Off-Limits War', start: formatDate(d), end: formatDate(end), ...cores['Off-Limits War'] });
                     }
-
                     if (d.getMonth() !== nextWeek.getMonth()) {
                         let end = new Date(d); end.setDate(end.getDate() + 6);
                         eventos.push({ title: 'Alliance League', start: formatDate(d), end: formatDate(end), ...cores['Alliance League'] });
                     }
                 }
 
-                // WASTELAND EXPLORATION
                 if (dayOfWeek === 2) {
                     let target = new Date('2026-10-20T00:00:00Z');
                     let current = new Date(formatDate(d) + 'T00:00:00Z');
                     let diffW = Math.round((current - target) / (1000 * 60 * 60 * 24));
-                    
                     if (diffW >= 0 && diffW % 14 === 0) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'Wasteland Exploration', start: formatDate(d), end: formatDate(end), ...cores['Wasteland Exploration'] });
                     }
                 }
 
-                if (dayOfWeek === 3) { // QUARTA
+                if (dayOfWeek === 3) {
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
-
                     if (Math.ceil(monthDate / 7) === 2) {
                         let endAR = new Date(d); endAR.setDate(endAR.getDate() + 5);
                         eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
@@ -330,7 +310,7 @@
                     }
                 }
 
-                if (dayOfWeek === 5) { // SEXTA
+                if (dayOfWeek === 5) {
                     if (Math.ceil(monthDate / 7) === 2) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(end), ...cores['District Showdown'] });
@@ -347,7 +327,7 @@
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 firstDay: 1, 
-                timeZone: 'UTC', // <--- A MÁGICA ACONTECE AQUI! Força o calendário a usar UTC
+                timeZone: 'UTC', 
                 dayHeaderFormat: { weekday: 'long' }, 
                 headerToolbar: {
                     left: 'prev,next today',
@@ -359,17 +339,14 @@
                 dayMaxEvents: 4, 
                 height: 'auto',
                 eventTextColor: '#ffffff',
-                
                 dayCellDidMount: function(arg) {
                     if (arg.isToday) {
                         var topEl = arg.el.querySelector('.fc-daygrid-day-top');
                         if (topEl) {
                             var numEl = topEl.querySelector('.fc-daygrid-day-number');
-                            
                             var icon = document.createElement('span');
                             icon.className = 'material-symbols-outlined today-icon';
                             icon.innerText = 'person';
-                            
                             topEl.insertBefore(icon, numEl);
                         }
                     }
