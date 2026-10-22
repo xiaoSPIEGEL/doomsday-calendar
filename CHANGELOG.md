@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Standardized all Telegram bot messages to English for the international alliance.
 - Enhanced notification rules to specifically tag R4/R5 leaders for registration reminders (Pompeii, Raids) and buff alerts.
-- Updated the bot's test mode to send separate notifications for @ReePatr1cia and @Mayo017.
+- Updated the bot's test mode to send separate notifications for R4 and R5.
 
 ### Removed
 - Removed the "Water War" event from the web calendar as it was deemed irrelevant for coordinated alliance participation.
