@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
 ## [1.1.0] - 2026-10-21
 ### Added
 - **Telegram Bot Integration:** Created `main.py` and configured GitHub Actions (`bot.yml`) to automatically send event reminders to the alliance's Telegram group.
-- Integration of dynamic mentions using GitHub Secrets (`REE_USERNAME`, `MAII_USERNAME`) to tag leaders without exposing their usernames in the public code.
+- Integration of dynamic mentions using GitHub Secrets to tag leaders without exposing their usernames in the public code.
 
 ### Removed
 - Deleted the `sw.js` (Service Worker) file and abandoned the browser-native notification approach due to modern browser restrictions. Focus shifted entirely to the Telegram Bot.
