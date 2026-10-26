@@ -18,7 +18,7 @@
     <style>
         /* --- CONFIGURAÇÃO DO FUNDO --- */
         body { 
-            font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #e0e0e0; 
+            font-family: Arial, sans-serif; margin: 0; padding: 10px; color: #e0e0e0;
             background: linear-gradient(rgba(17, 17, 17, 0.85), rgba(17, 17, 17, 0.85)), url('background.jpg') no-repeat center center fixed;
             background-size: cover;
         }
@@ -29,14 +29,14 @@
             justify-content: space-between;
             align-items: center;
             max-width: 1400px;
-            margin: 0 auto 30px auto;
+            margin: 0 auto 10px auto;
             padding: 0 10px;
         }
 
         /* --- HEADER --- */
         .header-title { 
             font-family: 'Orbitron', sans-serif; 
-            font-size: 2em; 
+            font-size: 1.6em;
             color: #ffffff; 
             text-transform: uppercase; 
             letter-spacing: 2px; 
@@ -53,11 +53,11 @@
 
         /* O Traço Separador */
         .divider {
-            width: 40px;
+            width: 30px;
             height: 2px;
             background-color: #ff9800;
             display: inline-block;
-            margin: 0 15px;
+            margin: 0 10px;
             border-radius: 2px;
             box-shadow: 0 0 10px rgba(255, 152, 0, 0.8);
         }
@@ -66,10 +66,10 @@
         #game-clock { 
             display: flex; 
             align-items: center; 
-            gap: 12px; 
-            font-size: 1.7em; 
+            gap: 8px; 
+            font-size: 1.3em;
             color: #e0e0e0; 
-            padding: 15px 25px; 
+            padding: 8px 15px;
             border-radius: 8px; 
             border: 1px solid #333; 
             background-color: #111; 
@@ -77,7 +77,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
         #game-clock .material-symbols-outlined { 
-            font-size: 1.3em; 
+            font-size: 1.1em; 
             color: #e0e0e0; 
         }
 
@@ -86,7 +86,7 @@
             max-width: 1400px; 
             margin: 0 auto; 
             background: #1e1e1e; 
-            padding: 20px; 
+            padding: 15px;
             border-radius: 8px; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.8); 
         }
@@ -122,12 +122,12 @@
         @media (max-width: 900px) {
             .top-bar { 
                 flex-direction: column; 
-                gap: 20px; 
+                gap: 10px; 
                 text-align: center;
             }
-            .header-title { font-size: 1.5em; }
+            .header-title { font-size: 1.3em; }
             .divider { display: none; }
-            #game-clock { font-size: 1.3em; padding: 10px 15px; }
+            #game-clock { font-size: 1.1em; padding: 6px 12px; }
         }
     </style>
 </head>
@@ -192,11 +192,8 @@
                 'Horde Defense': { backgroundColor: 'rgba(230, 126, 34, 0.85)', borderColor: 'rgba(230, 126, 34, 1)' },
                 'Off-Limits War': { backgroundColor: 'rgba(46, 204, 113, 0.85)', borderColor: 'rgba(46, 204, 113, 1)' },
                 'The Recovery Of Pompeii': { backgroundColor: 'rgba(155, 89, 182, 0.85)', borderColor: 'rgba(155, 89, 182, 1)' },
-                
-                // CORES ATUALIZADAS CONFORME PEDIDO
-                'All-Star Night': { backgroundColor: 'rgba(44, 62, 80, 0.85)', borderColor: 'rgba(44, 62, 80, 1)' }, // Azul Escuro
-                'Archipelago Raid (AR)': { backgroundColor: 'rgba(233, 30, 99, 0.85)', borderColor: 'rgba(233, 30, 99, 1)' }, // Magenta
-                
+                'All-Star Night': { backgroundColor: 'rgba(44, 62, 80, 0.85)', borderColor: 'rgba(44, 62, 80, 1)' },
+                'Archipelago Raid (AR)': { backgroundColor: 'rgba(233, 30, 99, 0.85)', borderColor: 'rgba(233, 30, 99, 1)' },
                 'Wasteland Exploration': { backgroundColor: 'rgba(255, 193, 7, 0.85)', borderColor: 'rgba(255, 193, 7, 1)' },
                 'Alliance League': { backgroundColor: 'rgba(241, 196, 15, 0.85)', borderColor: 'rgba(241, 196, 15, 1)' },
                 'District Showdown': { backgroundColor: 'rgba(26, 188, 156, 0.85)', borderColor: 'rgba(26, 188, 156, 1)' },
@@ -236,7 +233,6 @@
                         let endAS = new Date(d); endAS.setDate(endAS.getDate() + 7);
                         eventos.push({ title: 'All-Star Night', start: formatDate(d), end: formatDate(endAS), ...cores['All-Star Night'] });
                     } else {
-                        // CORREÇÃO: Biohazard Frenzy dura 7 dias (Segunda a Domingo)
                         let endBio = new Date(d); endBio.setDate(endBio.getDate() + 7); 
                         eventos.push({ title: 'Biohazard Frenzy', start: formatDate(d), end: formatDate(endBio), ...cores['Biohazard Frenzy'] });
                         
@@ -244,11 +240,10 @@
                         eventos.push({ title: 'Flash Sales', start: formatDate(d), end: formatDate(endFlash), ...cores['Flash Sales'] });
                     }
 
-                    // Back Alley Doctor's Request (Última semana do mês)
                     let nextWeekSameDay = new Date(d);
                     nextWeekSameDay.setDate(nextWeekSameDay.getDate() + 7);
                     if (d.getMonth() !== nextWeekSameDay.getMonth()) {
-                        let endBack = new Date(d); endBack.setDate(endBack.getDate() + 4); // Segunda a Quinta
+                        let endBack = new Date(d); endBack.setDate(endBack.getDate() + 4); 
                         eventos.push({ title: 'Back Alley Doctor', start: formatDate(d), end: formatDate(endBack), ...cores['Back Alley Doctor'] });
                     }
                 }
@@ -268,7 +263,6 @@
                         eventos.push({ title: 'Alliance League', start: formatDate(d), end: formatDate(end), ...cores['Alliance League'] });
                     }
 
-                    // WASTELAND EXPLORATION
                     let target = new Date('2026-10-20T00:00:00Z');
                     let current = new Date(formatDate(d) + 'T00:00:00Z');
                     let diffW = Math.round((current - target) / (1000 * 60 * 60 * 24));
@@ -284,21 +278,24 @@
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
-                    if (Math.ceil(monthDate / 7) === 2) {
-                        // CORREÇÃO: District Showdown e AR começam na 2ª Quarta
-                        let endAR = new Date(d); endAR.setDate(endAR.getDate() + 5);
-                        eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
-                        
+                    // CORREÇÃO: District Showdown na 1ª Quarta-feira (Qua a Dom)
+                    if (Math.ceil(monthDate / 7) === 1) {
                         let endDS = new Date(d); endDS.setDate(endDS.getDate() + 5);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(endDS), ...cores['District Showdown'] });
                     }
+                    // Archipelago Raid (AR) na 2ª Quarta-feira
+                    else if (Math.ceil(monthDate / 7) === 2) {
+                        let endAR = new Date(d); endAR.setDate(endAR.getDate() + 5);
+                        eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
+                    }
+                    // Island Raid (IR) na 4ª Quarta-feira
                     else if (Math.ceil(monthDate / 7) === 4) {
                         let endIR = new Date(d); endIR.setDate(endIR.getDate() + 5);
                         eventos.push({ title: 'Island Raid (IR)', start: formatDate(d), end: formatDate(endIR), ...cores['Island Raid (IR)'] });
                     }
                 }
 
-                // SEXTA-FEIRA (Apenas Extreme Showdown agora)
+                // SEXTA-FEIRA (Extreme Showdown na 4ª Sexta-feira)
                 if (dayOfWeek === 5) {
                     if (Math.ceil(monthDate / 7) === 4) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
@@ -319,7 +316,7 @@
                 },
                 events: eventos,
                 eventDisplay: 'block', 
-                dayMaxEvents: 4,
+                dayMaxEvents: false, // Mostra todos os eventos
                 height: 'auto',
                 eventTextColor: '#ffffff',
                 
