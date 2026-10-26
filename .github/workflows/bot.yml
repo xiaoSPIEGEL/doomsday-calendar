@@ -2,10 +2,10 @@ name: Telegram Bot
 
 on:
   schedule:
-    # Turno da Manhã (13:15 UTC a 13:45 UTC)
-    - cron: '15 13 * * *'
-    # Turno da Noite (22:45 UTC a 23:15 UTC)
-    - cron: '45 22 * * *'
+    # Turno da Manhã (12:00 UTC)
+    - cron: '0 12 * * *'
+    # Turno da Noite (23:00 UTC)
+    - cron: '0 23 * * *'
   workflow_dispatch:
 
 jobs:
