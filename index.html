@@ -102,9 +102,9 @@
         .fc-button-primary:hover { background-color: #ff9800; border-color: #ff9800; color: #111;}
 
         /* --- REDUÇÃO DO HEADER INTERNO DO CALENDÁRIO --- */
-        .fc-toolbar { margin-bottom: 0.5em !important; } /* Reduz espaço abaixo do header */
-        .fc-toolbar-title { font-size: 1.4em !important; margin: 0 !important; } /* Reduz tamanho do mês */
-        .fc-button { padding: 0.2em 0.5em !important; font-size: 0.85em !important; } /* Reduz os botões */
+        .fc-toolbar { margin-bottom: 0.5em !important; }
+        .fc-toolbar-title { font-size: 1.4em !important; margin: 0 !important; }
+        .fc-button { padding: 0.2em 0.5em !important; font-size: 0.85em !important; }
 
         /* --- ANIMAÇÕES DO DIA ATUAL --- */
         @keyframes pulse-bg {
@@ -116,8 +116,8 @@
         .fc-day-today { 
             animation: pulse-bg 1s infinite ease-in-out !important; 
             border-radius: 8px; 
-            /* Opcional: Adicionar uma borda fina para destacar ainda mais */
-            border: 1px solid rgba(255, 20, 147, 0.8) !important; 
+            /* CORREÇÃO: box-shadow em vez de border */
+            box-shadow: inset 0 0 0 2px rgba(255, 20, 147, 0.8) !important;
         }
         .fc-day-today .fc-daygrid-day-frame { background-color: transparent !important; }
 
@@ -345,7 +345,7 @@
                 events: eventos,
                 eventDisplay: 'block', 
                 dayMaxEvents: false, 
-                fixedWeekCount: false, // CORREÇÃO AQUI: Elimina a semana extra do próximo mês
+                fixedWeekCount: false,
                 height: 'auto',
                 eventTextColor: '#ffffff',
                 
