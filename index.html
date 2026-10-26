@@ -193,35 +193,37 @@
             var cycleStart = new Date('2026-10-05'); 
 
             var cores = {
-                // --- PvE, Caçadas e Chefes (Tons Terrosos, como uma caçada) ---
+                // --- PvE, Caçadas e Chefes ---
                 'Anpede Hunt': { backgroundColor: 'rgba(160, 82, 45, 0.85)', borderColor: 'rgba(160, 82, 45, 1)' }, // Sienna (Marrom Terroso)
                 'Horde Defense': { backgroundColor: 'rgba(160, 82, 45, 0.85)', borderColor: 'rgba(160, 82, 45, 1)' }, // Sienna
-                'Back Alley Doctor': { backgroundColor: 'rgba(160, 82, 45, 0.85)', borderColor: 'rgba(160, 82, 45, 1)' }, // Sienna
+                // Back Alley: Um laranja escuro/ferrugem, remetendo ao perigo e clandestinidade
+                'Back Alley Doctor': { backgroundColor: 'rgba(210, 105, 30, 0.85)', borderColor: 'rgba(210, 105, 30, 1)' }, // Chocolate (Laranja Ferrugem)
 
-                // --- Guerra Rápida e Intensa (Sangue, Fogo, 1 Hora) ---
-                'The Recovery Of Pompeii': { backgroundColor: 'rgba(220, 20, 60, 0.85)', borderColor: 'rgba(220, 20, 60, 1)' }, // Crimson (Carmesim)
+                // --- Guerra Rápida e Intensa ---
+                'The Recovery Of Pompeii': { backgroundColor: 'rgba(220, 20, 60, 0.85)', borderColor: 'rgba(220, 20, 60, 1)' }, // Crimson
                 'Off-Limits War': { backgroundColor: 'rgba(220, 20, 60, 0.85)', borderColor: 'rgba(220, 20, 60, 1)' }, // Crimson
 
-                // --- Eventos de Compra e Ouro (Riqueza, Comércio) ---
-                'District Showdown': { backgroundColor: 'rgba(218, 165, 32, 0.85)', borderColor: 'rgba(218, 165, 32, 1)' }, // Goldenrod (Dourado)
+                // --- Eventos de Compra e Ouro ---
+                'District Showdown': { backgroundColor: 'rgba(218, 165, 32, 0.85)', borderColor: 'rgba(218, 165, 32, 1)' }, // Goldenrod
                 'Flash Sales': { backgroundColor: 'rgba(218, 165, 32, 0.85)', borderColor: 'rgba(218, 165, 32, 1)' }, // Goldenrod
 
-                // --- Guerra Prolongada e Diplomacia (Estratégia, Ilhas, Mares) ---
-                'Archipelago Raid (AR)': { backgroundColor: 'rgba(106, 90, 205, 0.85)', borderColor: 'rgba(106, 90, 205, 1)' }, // Slate Blue (Azul Ardósia)
+                // --- Guerra Prolongada e Diplomacia ---
+                'Archipelago Raid (AR)': { backgroundColor: 'rgba(106, 90, 205, 0.85)', borderColor: 'rgba(106, 90, 205, 1)' }, // Slate Blue
                 'Island Raid (IR)': { backgroundColor: 'rgba(106, 90, 205, 0.85)', borderColor: 'rgba(106, 90, 205, 1)' }, // Slate Blue
 
-                // --- Evento Aberração (Caos, Perigo Extremo) ---
-                'Extreme Showdown': { backgroundColor: 'rgba(178, 34, 34, 0.85)', borderColor: 'rgba(178, 34, 34, 1)' }, // Firebrick (Tijolo Refratário - Vermelho mais escuro/sujo)
+                // --- Evento Aberração ---
+                'Extreme Showdown': { backgroundColor: 'rgba(178, 34, 34, 0.85)', borderColor: 'rgba(178, 34, 34, 1)' }, // Firebrick
 
                 // --- Tóxico, Natureza e Sobrevivência ---
-                'Biohazard Frenzy': { backgroundColor: 'rgba(154, 205, 50, 0.85)', borderColor: 'rgba(154, 205, 50, 1)' }, // Yellow Green (Verde Tóxico)
-                'Wasteland Exploration': { backgroundColor: 'rgba(154, 205, 50, 0.85)', borderColor: 'rgba(154, 205, 50, 1)' }, // Yellow Green
+                'Biohazard Frenzy': { backgroundColor: 'rgba(154, 205, 50, 0.85)', borderColor: 'rgba(154, 205, 50, 1)' }, // Yellow Green (Verde Tóxico Brilhante)
+                // Wasteland: Um verde mais escuro, puxado para o militar/pantanal (PvP e risco)
+                'Wasteland Exploration': { backgroundColor: 'rgba(85, 107, 47, 0.85)', borderColor: 'rgba(85, 107, 47, 1)' }, // Dark Olive Green
 
-                // --- All-Star Night (O mais importante, estrelas, heróis) ---
-                'All-Star Night': { backgroundColor: 'rgba(65, 105, 225, 0.85)', borderColor: 'rgba(65, 105, 225, 1)' }, // Royal Blue (Azul Real)
+                // --- All-Star Night ---
+                'All-Star Night': { backgroundColor: 'rgba(65, 105, 225, 0.85)', borderColor: 'rgba(65, 105, 225, 1)' }, // Royal Blue
 
-                // --- Alliance League (O "Filler", distinto mas não alienígena) ---
-                'Alliance League': { backgroundColor: 'rgba(72, 209, 204, 0.85)', borderColor: 'rgba(72, 209, 204, 1)' } // Medium Turquoise (Turquesa)
+                // --- Alliance League ---
+                'Alliance League': { backgroundColor: 'rgba(72, 209, 204, 0.85)', borderColor: 'rgba(72, 209, 204, 1)' } // Medium Turquoise
             };
 
             var formatDate = (date) => {
