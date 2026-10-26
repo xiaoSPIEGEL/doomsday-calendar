@@ -101,6 +101,11 @@
         .fc-button-primary { background-color: #333; border-color: #444; }
         .fc-button-primary:hover { background-color: #ff9800; border-color: #ff9800; color: #111;}
 
+        /* --- REDUÇÃO DO HEADER INTERNO DO CALENDÁRIO --- */
+        .fc-toolbar { margin-bottom: 0.5em !important; } /* Reduz espaço abaixo do header */
+        .fc-toolbar-title { font-size: 1.4em !important; margin: 0 !important; } /* Reduz tamanho do mês */
+        .fc-button { padding: 0.2em 0.5em !important; font-size: 0.85em !important; } /* Reduz os botões */
+
         /* --- ANIMAÇÕES DO DIA ATUAL --- */
         @keyframes pulse-bg {
             0% { background-color: rgba(255, 152, 0, 0.4); }
@@ -278,7 +283,7 @@
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
-                    // CORREÇÃO: District Showdown na 1ª Quarta-feira (Qua a Dom)
+                    // District Showdown na 1ª Quarta-feira
                     if (Math.ceil(monthDate / 7) === 1) {
                         let endDS = new Date(d); endDS.setDate(endDS.getDate() + 5);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(endDS), ...cores['District Showdown'] });
@@ -295,7 +300,7 @@
                     }
                 }
 
-                // SEXTA-FEIRA (Extreme Showdown na 4ª Sexta-feira)
+                // SEXTA-FEIRA
                 if (dayOfWeek === 5) {
                     if (Math.ceil(monthDate / 7) === 4) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
@@ -316,7 +321,8 @@
                 },
                 events: eventos,
                 eventDisplay: 'block', 
-                dayMaxEvents: false, // Mostra todos os eventos
+                dayMaxEvents: false, 
+                fixedWeekCount: false, // CORREÇÃO AQUI: Elimina a semana extra do próximo mês
                 height: 'auto',
                 eventTextColor: '#ffffff',
                 
