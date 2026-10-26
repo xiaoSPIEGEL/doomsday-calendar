@@ -187,7 +187,6 @@
             var endDate = new Date('2027-12-31');   
             var cycleStart = new Date('2026-10-05'); 
 
-            // CORES ATUALIZADAS (Water War removido)
             var cores = {
                 'Anpede Hunt': { backgroundColor: 'rgba(231, 76, 60, 0.85)', borderColor: 'rgba(231, 76, 60, 1)' },
                 'Horde Defense': { backgroundColor: 'rgba(230, 126, 34, 0.85)', borderColor: 'rgba(230, 126, 34, 1)' },
@@ -199,7 +198,12 @@
                 'District Showdown': { backgroundColor: 'rgba(26, 188, 156, 0.85)', borderColor: 'rgba(26, 188, 156, 1)' },
                 'Archipelago Raid (AR)': { backgroundColor: 'rgba(142, 68, 173, 0.85)', borderColor: 'rgba(142, 68, 173, 1)' },
                 'Island Raid (IR)': { backgroundColor: 'rgba(41, 128, 185, 0.85)', borderColor: 'rgba(41, 128, 185, 1)' },
-                'Extreme Showdown': { backgroundColor: 'rgba(149, 165, 166, 0.85)', borderColor: 'rgba(149, 165, 166, 1)' }
+                'Extreme Showdown': { backgroundColor: 'rgba(149, 165, 166, 0.85)', borderColor: 'rgba(149, 165, 166, 1)' },
+                
+                // NOVAS CORES ADICIONADAS
+                'Biohazard Frenzy': { backgroundColor: 'rgba(139, 195, 74, 0.85)', borderColor: 'rgba(139, 195, 74, 1)' },
+                'Flash Sales': { backgroundColor: 'rgba(255, 87, 34, 0.85)', borderColor: 'rgba(255, 87, 34, 1)' },
+                'Back Alley Doctor': { backgroundColor: 'rgba(121, 85, 72, 0.85)', borderColor: 'rgba(121, 85, 72, 1)' }
             };
 
             var formatDate = (date) => {
@@ -222,19 +226,37 @@
                 let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                 let isWeek1 = (Math.round(diffDays / 7) % 2 === 0);
 
-                if (dayOfWeek === 1) { // SEGUNDA
-                    // Water War removido daqui
-                    
+                // SEGUNDA-FEIRA
+                if (dayOfWeek === 1) {
                     let endA = new Date(d); endA.setDate(endA.getDate() + 1);
                     eventos.push({ title: 'Anpede Hunt', start: formatDate(d), end: formatDate(endA), ...cores['Anpede Hunt'] });
 
                     if (isWeek1) {
                         let endAS = new Date(d); endAS.setDate(endAS.getDate() + 7);
                         eventos.push({ title: 'All-Star Night', start: formatDate(d), end: formatDate(endAS), ...cores['All-Star Night'] });
+                    } else {
+                        // --- NOVOS EVENTOS ADICIONADOS (Semanas sem All-Star) ---
+                        
+                        // Biohazard Frenzy (Segunda a Sábado)
+                        let endBio = new Date(d); endBio.setDate(endBio.getDate() + 6);
+                        eventos.push({ title: 'Biohazard Frenzy', start: formatDate(d), end: formatDate(endBio), ...cores['Biohazard Frenzy'] });
+                        
+                        // Flash Sales (Apenas na Segunda-feira)
+                        let endFlash = new Date(d); endFlash.setDate(endFlash.getDate() + 1);
+                        eventos.push({ title: 'Flash Sales', start: formatDate(d), end: formatDate(endFlash), ...cores['Flash Sales'] });
+                    }
+
+                    // Back Alley Doctor's Request (Última semana do mês)
+                    let nextWeekSameDay = new Date(d);
+                    nextWeekSameDay.setDate(nextWeekSameDay.getDate() + 7);
+                    if (d.getMonth() !== nextWeekSameDay.getMonth()) {
+                        let endBack = new Date(d); endBack.setDate(endBack.getDate() + 4); // Segunda a Quinta
+                        eventos.push({ title: 'Back Alley Doctor', start: formatDate(d), end: formatDate(endBack), ...cores['Back Alley Doctor'] });
                     }
                 }
 
-                if (dayOfWeek === 2) { // TERÇA
+                // TERÇA-FEIRA
+                if (dayOfWeek === 2) {
                     if (isWeek1) {
                         let end = new Date(d); end.setDate(end.getDate() + 1);
                         eventos.push({ title: 'The Recovery Of Pompeii', start: formatDate(d), end: formatDate(end), ...cores['The Recovery Of Pompeii'] });
@@ -259,7 +281,8 @@
                     }
                 }
 
-                if (dayOfWeek === 3) { // QUARTA
+                // QUARTA-FEIRA
+                if (dayOfWeek === 3) {
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
@@ -273,7 +296,8 @@
                     }
                 }
 
-                if (dayOfWeek === 5) { // SEXTA
+                // SEXTA-FEIRA
+                if (dayOfWeek === 5) {
                     if (Math.ceil(monthDate / 7) === 2) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(end), ...cores['District Showdown'] });
@@ -297,7 +321,7 @@
                 },
                 events: eventos,
                 eventDisplay: 'block', 
-                dayMaxEvents: 5, 
+                dayMaxEvents: 4, // Aumentei um pouquinho para caber todos os eventos sem esconder
                 height: 'auto',
                 eventTextColor: '#ffffff',
                 
