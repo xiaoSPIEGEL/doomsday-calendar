@@ -192,15 +192,16 @@
                 'Horde Defense': { backgroundColor: 'rgba(230, 126, 34, 0.85)', borderColor: 'rgba(230, 126, 34, 1)' },
                 'Off-Limits War': { backgroundColor: 'rgba(46, 204, 113, 0.85)', borderColor: 'rgba(46, 204, 113, 1)' },
                 'The Recovery Of Pompeii': { backgroundColor: 'rgba(155, 89, 182, 0.85)', borderColor: 'rgba(155, 89, 182, 1)' },
-                'All-Star Night': { backgroundColor: 'rgba(233, 30, 99, 0.85)', borderColor: 'rgba(233, 30, 99, 1)' },
+                
+                // CORES ATUALIZADAS CONFORME PEDIDO
+                'All-Star Night': { backgroundColor: 'rgba(44, 62, 80, 0.85)', borderColor: 'rgba(44, 62, 80, 1)' }, // Azul Escuro
+                'Archipelago Raid (AR)': { backgroundColor: 'rgba(233, 30, 99, 0.85)', borderColor: 'rgba(233, 30, 99, 1)' }, // Magenta
+                
                 'Wasteland Exploration': { backgroundColor: 'rgba(255, 193, 7, 0.85)', borderColor: 'rgba(255, 193, 7, 1)' },
                 'Alliance League': { backgroundColor: 'rgba(241, 196, 15, 0.85)', borderColor: 'rgba(241, 196, 15, 1)' },
                 'District Showdown': { backgroundColor: 'rgba(26, 188, 156, 0.85)', borderColor: 'rgba(26, 188, 156, 1)' },
-                'Archipelago Raid (AR)': { backgroundColor: 'rgba(142, 68, 173, 0.85)', borderColor: 'rgba(142, 68, 173, 1)' },
                 'Island Raid (IR)': { backgroundColor: 'rgba(41, 128, 185, 0.85)', borderColor: 'rgba(41, 128, 185, 1)' },
                 'Extreme Showdown': { backgroundColor: 'rgba(149, 165, 166, 0.85)', borderColor: 'rgba(149, 165, 166, 1)' },
-                
-                // NOVAS CORES ADICIONADAS
                 'Biohazard Frenzy': { backgroundColor: 'rgba(139, 195, 74, 0.85)', borderColor: 'rgba(139, 195, 74, 1)' },
                 'Flash Sales': { backgroundColor: 'rgba(255, 87, 34, 0.85)', borderColor: 'rgba(255, 87, 34, 1)' },
                 'Back Alley Doctor': { backgroundColor: 'rgba(121, 85, 72, 0.85)', borderColor: 'rgba(121, 85, 72, 1)' }
@@ -235,13 +236,10 @@
                         let endAS = new Date(d); endAS.setDate(endAS.getDate() + 7);
                         eventos.push({ title: 'All-Star Night', start: formatDate(d), end: formatDate(endAS), ...cores['All-Star Night'] });
                     } else {
-                        // --- NOVOS EVENTOS ADICIONADOS (Semanas sem All-Star) ---
-                        
-                        // Biohazard Frenzy (Segunda a Sábado)
-                        let endBio = new Date(d); endBio.setDate(endBio.getDate() + 6);
+                        // CORREÇÃO: Biohazard Frenzy dura 7 dias (Segunda a Domingo)
+                        let endBio = new Date(d); endBio.setDate(endBio.getDate() + 7); 
                         eventos.push({ title: 'Biohazard Frenzy', start: formatDate(d), end: formatDate(endBio), ...cores['Biohazard Frenzy'] });
                         
-                        // Flash Sales (Apenas na Segunda-feira)
                         let endFlash = new Date(d); endFlash.setDate(endFlash.getDate() + 1);
                         eventos.push({ title: 'Flash Sales', start: formatDate(d), end: formatDate(endFlash), ...cores['Flash Sales'] });
                     }
@@ -287,8 +285,12 @@
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
                     if (Math.ceil(monthDate / 7) === 2) {
+                        // CORREÇÃO: District Showdown e AR começam na 2ª Quarta
                         let endAR = new Date(d); endAR.setDate(endAR.getDate() + 5);
                         eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
+                        
+                        let endDS = new Date(d); endDS.setDate(endDS.getDate() + 5);
+                        eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(endDS), ...cores['District Showdown'] });
                     }
                     else if (Math.ceil(monthDate / 7) === 4) {
                         let endIR = new Date(d); endIR.setDate(endIR.getDate() + 5);
@@ -296,13 +298,9 @@
                     }
                 }
 
-                // SEXTA-FEIRA
+                // SEXTA-FEIRA (Apenas Extreme Showdown agora)
                 if (dayOfWeek === 5) {
-                    if (Math.ceil(monthDate / 7) === 2) {
-                        let end = new Date(d); end.setDate(end.getDate() + 3);
-                        eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(end), ...cores['District Showdown'] });
-                    }
-                    else if (Math.ceil(monthDate / 7) === 4) {
+                    if (Math.ceil(monthDate / 7) === 4) {
                         let end = new Date(d); end.setDate(end.getDate() + 3);
                         eventos.push({ title: 'Extreme Showdown', start: formatDate(d), end: formatDate(end), ...cores['Extreme Showdown'] });
                     }
@@ -321,7 +319,7 @@
                 },
                 events: eventos,
                 eventDisplay: 'block', 
-                dayMaxEvents: 4, // Aumentei um pouquinho para caber todos os eventos sem esconder
+                dayMaxEvents: 4,
                 height: 'auto',
                 eventTextColor: '#ffffff',
                 
