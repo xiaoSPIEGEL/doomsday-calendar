@@ -30,20 +30,27 @@ def process_commands(now):
     # --- Fases do All-Star Night ---
     all_star_phase = diff_cycle % 14
     all_star_active = all_star_phase < 7
-    buff_days = [0, 2, 5, 6] 
+    buff_days = [0, 2, 5, 6] # Mon, Wed, Sat, Sun
     
     # --- Eventos de Hoje ---
     has_pompeii_today = (diff_cycle // 7) % 2 == 0 and day_of_week == 1
     has_wasteland_today = (diff_waste % 14) in [0, 1, 2]
-    is_last_week_of_month = (now.day + 7) > 28 # Verifica se está na última semana
+    
+    # Correção para a última semana do mês (mais preciso)
+    is_last_week_of_month = (now + datetime.timedelta(days=7)).month != now.month
     
     current_week_num = (now.day - 1) // 7 + 1
 
     # --- Eventos de Amanhã ---
     tomorrow = day_of_week + 1 if day_of_week < 6 else 0
     tomorrow_date = now + datetime.timedelta(days=1)
+    tomorrow_diff_cycle = (tomorrow_date.replace(hour=0, minute=0, second=0, microsecond=0) - base_date).days
+    
+    # Verifica se a PRÓXIMA semana é All-Star ou Biohazard
+    is_tomorrow_all_star = (tomorrow_diff_cycle % 14) < 7
+    is_pompeii_tomorrow = (tomorrow_diff_cycle // 7) % 2 == 0 and tomorrow == 1
+    
     tomorrow_week_num = (tomorrow_date.day - 1) // 7 + 1
-    is_pompeii_tomorrow = ((tomorrow_date - base_date).days // 7) % 2 == 0
 
     # ==========================================
     # TURNO DA MANHÃ (12:00 UTC)
@@ -61,8 +68,8 @@ def process_commands(now):
         elif day_of_week == 3 and is_last_week_of_month:
             morning_msgs.append("⏰ *Get Ready!* *Back Alley Doctor's Request* bosses start soon (15:00 UTC). Log in 15 minutes early, gather your squads, and get ready when R4/R5 summons the bosses!")
             
-        # Lembrete da Maii
-        if all_star_active and all_star_phase in buff_days:
+        # Lembrete da Maii (Usa o dia da semana atual, não a fase do ciclo)
+        if all_star_active and day_of_week in buff_days:
             morning_msgs.append(f"👑 *{MAII_USERNAME} (R5)*: Today is an All-Star buff day! Don't forget the *Federation Buff* at 14:00 UTC!")
              
         if morning_msgs:
@@ -76,10 +83,13 @@ def process_commands(now):
         
         # --- PARTE 1: Avisos de Véspera (Amanhã) ---
         if tomorrow == 0: # Amanhã é Segunda
-            evening_msgs.append("📢 *Tomorrow:* *Biohazard Frenzy* starts! Complete missions as fast as possible. Points are cumulative, so the earlier you rank up, the easier it is to keep a good position!")
-            evening_msgs.append("📢 *Tomorrow:* *Flash Sales*! Set your alarms: 01:00 UTC, 09:00 UTC, and 17:00 UTC for 30 General Speedups (60m each) for 1000 diamonds? Don't miss it!")
-            if is_last_week_of_month:
-                evening_msgs.append("📢 *Tomorrow:* *Back Alley Doctor's Request* starts! Great rewards, low effort. Individual efforts add up to better prizes. Don't leave individual missions for the last day!")
+            if is_tomorrow_all_star:
+                evening_msgs.append("📢 *Tomorrow:* *All-Star Night* starts! Get ready to earn points and climb the ranks!")
+            else:
+                evening_msgs.append("📢 *Tomorrow:* *Biohazard Frenzy* starts! Complete missions as fast as possible. Points are cumulative, so the earlier you rank up, the easier it is to keep a good position!")
+                evening_msgs.append("📢 *Tomorrow:* *Flash Sales*! Set your alarms: 01:00 UTC, 09:00 UTC, and 17:00 UTC for 30 General Speedups (60m each) for 1000 diamonds? Don't miss it!")
+                if is_last_week_of_month:
+                    evening_msgs.append("📢 *Tomorrow:* *Back Alley Doctor's Request* starts! Great rewards, low effort. Individual efforts add up to better prizes. Don't leave individual missions for the last day!")
                 
         elif tomorrow == 1: # Amanhã é Terça
             if is_pompeii_tomorrow:
@@ -91,10 +101,14 @@ def process_commands(now):
                 evening_msgs.append("📢 *Tomorrow:* *Wasteland Exploration*! Start forming your teams of 4.")
                 
         elif tomorrow == 2: # Amanhã é Quarta
-            if tomorrow_week_num == 2:
+            if tomorrow_week_num == 1:
+                # Correção: District Showdown é na 1ª semana
                 evening_msgs.append("📢 *Tomorrow:* *District Showdown Registration*! If you are participating in another alliance, please inform R4/R5 and you can move to the other alliance after Pompeii. Don't leave it to the last minute!")
+            elif tomorrow_week_num == 2:
+                # Correção: AR é na 2ª semana
                 evening_msgs.append(f"📢 *Tomorrow:* *Archipelago Raid (AR)*!\n{REE_USERNAME} (R4), would you like to remind everyone in-game to register?")
             elif tomorrow_week_num == 4:
+                # IR é na 4ª semana
                 evening_msgs.append(f"📢 *Tomorrow:* *Island Raid (IR)*!\n{REE_USERNAME} (R4), would you like to remind everyone in-game to register?")
                  
         elif tomorrow == 3: # Amanhã é Quinta
@@ -108,7 +122,7 @@ def process_commands(now):
         # --- PARTE 2: Fechamento do Dia (Hoje) ---
         if day_of_week == 6: # Domingo
             evening_msgs.append("🪙 *Arena of Doom*: Don't forget to use your coins! They expire at reset.")
-            if current_week_num == 2: # Se for semana de District Showdown
+            if current_week_num == 1: # Correção: District Showdown é na 1ª semana
                 evening_msgs.append("🔑 *District Showdown*: Time to use your keys on the enemy alliance vault. Check with R4/R5 which alliance to attack.")
         
         if all_star_active:
