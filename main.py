@@ -36,9 +36,7 @@ def process_commands(now):
     has_pompeii_today = (diff_cycle // 7) % 2 == 0 and day_of_week == 1
     has_wasteland_today = (diff_waste % 14) in [0, 1, 2]
     
-    # Correção para a última semana do mês (mais preciso)
     is_last_week_of_month = (now + datetime.timedelta(days=7)).month != now.month
-    
     current_week_num = (now.day - 1) // 7 + 1
 
     # --- Eventos de Amanhã ---
@@ -46,10 +44,8 @@ def process_commands(now):
     tomorrow_date = now + datetime.timedelta(days=1)
     tomorrow_diff_cycle = (tomorrow_date.replace(hour=0, minute=0, second=0, microsecond=0) - base_date).days
     
-    # Verifica se a PRÓXIMA semana é All-Star ou Biohazard
     is_tomorrow_all_star = (tomorrow_diff_cycle % 14) < 7
     is_pompeii_tomorrow = (tomorrow_diff_cycle // 7) % 2 == 0 and tomorrow == 1
-    
     tomorrow_week_num = (tomorrow_date.day - 1) // 7 + 1
 
     # ==========================================
@@ -58,7 +54,6 @@ def process_commands(now):
     if in_window(12, 0):
         morning_msgs = []
         
-        # Ações do dia (Hoje)
         if day_of_week == 0:
             morning_msgs.append("⏰ *Get Ready!* *Anpede Hunt* starts soon (14:00 UTC). Gather your troops!")
         elif day_of_week == 1 and has_pompeii_today:
@@ -68,7 +63,6 @@ def process_commands(now):
         elif day_of_week == 3 and is_last_week_of_month:
             morning_msgs.append("⏰ *Get Ready!* *Back Alley Doctor's Request* bosses start soon (15:00 UTC). Log in 15 minutes early, gather your squads, and get ready when R4/R5 summons the bosses!")
             
-        # Lembrete da Maii (Usa o dia da semana atual, não a fase do ciclo)
         if all_star_active and day_of_week in buff_days:
             morning_msgs.append(f"👑 *{MAII_USERNAME} (R5)*: Today is an All-Star buff day! Don't forget the *Federation Buff* at 14:00 UTC!")
              
@@ -90,7 +84,6 @@ def process_commands(now):
                 evening_msgs.append("📢 *Tomorrow:* *All-Star Night* starts! Get ready to earn points and climb the ranks!")
             else:
                 evening_msgs.append("📢 *Tomorrow:* *Biohazard Frenzy* starts! Complete missions as fast as possible. Points are cumulative, so the earlier you rank up, the easier it is to keep a good position!")
-                evening_msgs.append("📢 *Tomorrow:* *Flash Sales*! Set your alarms: 01:00 UTC, 09:00 UTC, and 17:00 UTC for 30 General Speedups (60m each) for 1000 diamonds? Don't miss it!")
                 
             if is_last_week_of_month:
                 evening_msgs.append("📢 *Tomorrow:* *Back Alley Doctor's Request* starts! Great rewards, low effort. Individual efforts add up to better prizes. Don't leave individual missions for the last day!")
@@ -130,16 +123,11 @@ def process_commands(now):
         if has_wasteland_today:
             evening_msgs.append("🏜️ *Wasteland*: Check the rank and decide whether to use Energy Cans or save them for the next event. Good luck!")
             
-        # Biohazard (Sábado, quando não tem All-Star)
         if day_of_week == 5 and not all_star_active:
             evening_msgs.append("☣️ *Biohazard Frenzy*: Don't forget to use the Bio-Stabilizers in Quick Accumulation to climb higher in the rank. Good luck!")
             
-        # Se não houver nenhum aviso (Rede de Segurança)
-        if not evening_msgs:
-            if day_of_week == 0: evening_msgs.append("📅 *End of Day:* No major events ending today. A good time to farm and upgrade heroes! 🛡️")
-            elif day_of_week == 3: evening_msgs.append("📅 *End of Day:* No major events ending today. Rest up, commanders! 🛡️")
-            elif day_of_week == 5: evening_msgs.append("📅 *End of Day:* No major events ending today. Prepare for the weekend! 🛡️")
-            else: evening_msgs.append("📅 *End of Day:* No events scheduled. A quiet day in the wasteland. 🛡️")
+        # REMOVIDO: Bloco "if not evening_msgs" (Rede de Segurança).
+        # Agora, se não houver nada, a lista fica vazia e o bot não envia nada.
 
         if evening_msgs:
             send_telegram_message("\n\n".join(evening_msgs))
