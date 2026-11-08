@@ -274,6 +274,13 @@
                         let endBack = new Date(d); endBack.setDate(endBack.getDate() + 4); 
                         eventos.push({ title: 'Back Alley Doctor', start: formatDate(d), end: formatDate(endBack), ...cores['Back Alley Doctor'] });
                     }
+                    
+                    // Archipelago Raid (AR) na 2ª Semana, durando 7 dias
+                    let weekOfMonth = Math.ceil(monthDate / 7);
+                    if (weekOfMonth === 2) {
+                        let endAR = new Date(d); endAR.setDate(endAR.getDate() + 7); // Segunda a Domingo
+                        eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
+                    }
                 }
 
                 // TERÇA-FEIRA
@@ -306,17 +313,13 @@
                     let end = new Date(d); end.setDate(end.getDate() + 1);
                     eventos.push({ title: 'Horde Defense', start: formatDate(d), end: formatDate(end), ...cores['Horde Defense'] });
 
-                    // District Showdown na 1ª Quarta-feira
+                    // District Showdown na 1ª Quarta-feira (mantém)
                     if (Math.ceil(monthDate / 7) === 1) {
                         let endDS = new Date(d); endDS.setDate(endDS.getDate() + 5);
                         eventos.push({ title: 'District Showdown', start: formatDate(d), end: formatDate(endDS), ...cores['District Showdown'] });
                     }
-                    // Archipelago Raid (AR) na 2ª Quarta-feira
-                    else if (Math.ceil(monthDate / 7) === 2) {
-                        let endAR = new Date(d); endAR.setDate(endAR.getDate() + 5);
-                        eventos.push({ title: 'Archipelago Raid (AR)', start: formatDate(d), end: formatDate(endAR), ...cores['Archipelago Raid (AR)'] });
-                    }
-                    // Island Raid (IR) na 4ª Quarta-feira
+                    
+                    // Island Raid (IR) na 4ª Quarta-feira (mantém 5 dias)
                     else if (Math.ceil(monthDate / 7) === 4) {
                         let endIR = new Date(d); endIR.setDate(endIR.getDate() + 5);
                         eventos.push({ title: 'Island Raid (IR)', start: formatDate(d), end: formatDate(endIR), ...cores['Island Raid (IR)'] });
