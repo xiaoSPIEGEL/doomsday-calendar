@@ -101,14 +101,11 @@ def process_commands(now):
                 evening_msgs.append("📢 *Tomorrow:* *Wasteland Exploration*! Start forming your teams of 4.")
                 
         elif tomorrow == 2: # Amanhã é Quarta
-            if tomorrow_week_num == 1:
-                # Correção: District Showdown é na 1ª semana
+            if tomorrow_week_num == 2:
+                evening_msgs.append(f"📢 *Tomorrow:* *Archipelago Raid (AR) Registration!* \n{REE_USERNAME} (R4), the registration period starts TOMORROW (Monday) and ends on Tuesday (Matchmaking). The war begins on Wednesday! Would you like to remind everyone in-game to register?")
+            elif tomorrow_week_num == 1:
                 evening_msgs.append("📢 *Tomorrow:* *District Showdown Registration*! If you are participating in another alliance, please inform R4/R5 and you can move to the other alliance after Pompeii. Don't leave it to the last minute!")
-            elif tomorrow_week_num == 2:
-                # Correção: AR é na 2ª semana
-                evening_msgs.append(f"📢 *Tomorrow:* *Archipelago Raid (AR)*!\n{REE_USERNAME} (R4), would you like to remind everyone in-game to register?")
             elif tomorrow_week_num == 4:
-                # IR é na 4ª semana
                 evening_msgs.append(f"📢 *Tomorrow:* *Island Raid (IR)*!\n{REE_USERNAME} (R4), would you like to remind everyone in-game to register?")
                  
         elif tomorrow == 3: # Amanhã é Quinta
