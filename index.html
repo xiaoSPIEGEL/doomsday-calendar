@@ -263,9 +263,6 @@
                     } else {
                         let endBio = new Date(d); endBio.setDate(endBio.getDate() + 7); 
                         eventos.push({ title: 'Biohazard Frenzy', start: formatDate(d), end: formatDate(endBio), ...cores['Biohazard Frenzy'] });
-                        
-                        let endFlash = new Date(d); endFlash.setDate(endFlash.getDate() + 1);
-                        eventos.push({ title: 'Flash Sales', start: formatDate(d), end: formatDate(endFlash), ...cores['Flash Sales'] });
                     }
 
                     let nextWeekSameDay = new Date(d);
