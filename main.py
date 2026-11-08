@@ -83,13 +83,17 @@ def process_commands(now):
         
         # --- PARTE 1: Avisos de Véspera (Amanhã) ---
         if tomorrow == 0: # Amanhã é Segunda
+            if tomorrow_week_num == 2:
+                evening_msgs.append(f"📢 *Tomorrow:* *Archipelago Raid (AR) Registration!* \n{REE_USERNAME} (R4), the registration period starts TOMORROW (Monday) and ends on Tuesday (Matchmaking). The war begins on Wednesday! Would you like to remind everyone in-game to register?")
+            
             if is_tomorrow_all_star:
                 evening_msgs.append("📢 *Tomorrow:* *All-Star Night* starts! Get ready to earn points and climb the ranks!")
             else:
                 evening_msgs.append("📢 *Tomorrow:* *Biohazard Frenzy* starts! Complete missions as fast as possible. Points are cumulative, so the earlier you rank up, the easier it is to keep a good position!")
                 evening_msgs.append("📢 *Tomorrow:* *Flash Sales*! Set your alarms: 01:00 UTC, 09:00 UTC, and 17:00 UTC for 30 General Speedups (60m each) for 1000 diamonds? Don't miss it!")
-                if is_last_week_of_month:
-                    evening_msgs.append("📢 *Tomorrow:* *Back Alley Doctor's Request* starts! Great rewards, low effort. Individual efforts add up to better prizes. Don't leave individual missions for the last day!")
+                
+            if is_last_week_of_month:
+                evening_msgs.append("📢 *Tomorrow:* *Back Alley Doctor's Request* starts! Great rewards, low effort. Individual efforts add up to better prizes. Don't leave individual missions for the last day!")
                 
         elif tomorrow == 1: # Amanhã é Terça
             if is_pompeii_tomorrow:
@@ -101,9 +105,7 @@ def process_commands(now):
                 evening_msgs.append("📢 *Tomorrow:* *Wasteland Exploration*! Start forming your teams of 4.")
                 
         elif tomorrow == 2: # Amanhã é Quarta
-            if tomorrow_week_num == 2:
-                evening_msgs.append(f"📢 *Tomorrow:* *Archipelago Raid (AR) Registration!* \n{REE_USERNAME} (R4), the registration period starts TOMORROW (Monday) and ends on Tuesday (Matchmaking). The war begins on Wednesday! Would you like to remind everyone in-game to register?")
-            elif tomorrow_week_num == 1:
+            if tomorrow_week_num == 1:
                 evening_msgs.append("📢 *Tomorrow:* *District Showdown Registration*! If you are participating in another alliance, please inform R4/R5 and you can move to the other alliance after Pompeii. Don't leave it to the last minute!")
             elif tomorrow_week_num == 4:
                 evening_msgs.append(f"📢 *Tomorrow:* *Island Raid (IR)*!\n{REE_USERNAME} (R4), would you like to remind everyone in-game to register?")
@@ -119,7 +121,7 @@ def process_commands(now):
         # --- PARTE 2: Fechamento do Dia (Hoje) ---
         if day_of_week == 6: # Domingo
             evening_msgs.append("🪙 *Arena of Doom*: Don't forget to use your coins! They expire at reset.")
-            if current_week_num == 1: # Correção: District Showdown é na 1ª semana
+            if current_week_num == 1:
                 evening_msgs.append("🔑 *District Showdown*: Time to use your keys on the enemy alliance vault. Check with R4/R5 which alliance to attack.")
         
         if all_star_active:
