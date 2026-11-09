@@ -272,10 +272,10 @@
                     if (isWeek1) {
                         let endAS = new Date(d); endAS.setDate(endAS.getDate() + 7);
                         eventos.push({ title: 'All-Star Night', start: formatDate(d), end: formatDate(endAS), ...cores['All-Star Night'] });
-                    } // else {
-                        // let endBio = new Date(d); endBio.setDate(endBio.getDate() + 7); 
-                        // eventos.push({ title: 'Biohazard Frenzy', start: formatDate(d), end: formatDate(endBio), ...cores['Biohazard Frenzy'] });
-                    // }
+                    }  else {
+                         let endBio = new Date(d); endBio.setDate(endBio.getDate() + 7); 
+                         eventos.push({ title: 'Biohazard Frenzy', start: formatDate(d), end: formatDate(endBio), ...cores['Biohazard Frenzy'] });
+                     }
 
                     let nextWeekSameDay = new Date(d);
                     nextWeekSameDay.setDate(nextWeekSameDay.getDate() + 7);
